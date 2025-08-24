@@ -30,10 +30,8 @@ For more information on the importance of a professional README for your reposit
 
 <div align="center">
   <!-- You are encouraged to replace this logo with your own! Otherwise you can also remove it. -->
-  <img src="murple_logo.png" alt="logo" width="140"  height="auto" />
+  <img src="images/amazon-mobile-logo-white.png" alt="logo" width="140"  height="auto" />
   <br/>
-
-  <h3><b>Microverse README Template</b></h3>
 
 </div>
 
@@ -63,11 +61,11 @@ For more information on the importance of a professional README for your reposit
 
 <!-- PROJECT DESCRIPTION -->
 
-# 📖 [your_project_name] <a name="about-project"></a>
+# 📖 Amazon Mock Website <a name="about-project"></a>
 
 > Describe your project in 1 or 2 sentences.
 
-**[your_project__name]** is a...
+**Amazon Mock** is a website that displays a list of products and allows customers to choose products to put in their cart and finallu checkout their order.
 
 ## 🛠 Built With <a name="built-with"></a>
 
@@ -210,15 +208,9 @@ Example:
 
 👤 **Author1**
 
-- GitHub: [@githubhandle](https://github.com/githubhandle)
-- Twitter: [@twitterhandle](https://twitter.com/twitterhandle)
-- LinkedIn: [LinkedIn](https://linkedin.com/in/linkedinhandle)
-
-👤 **Author2**
-
-- GitHub: [@githubhandle](https://github.com/githubhandle)
-- Twitter: [@twitterhandle](https://twitter.com/twitterhandle)
-- LinkedIn: [LinkedIn](https://linkedin.com/in/linkedinhandle)
+- GitHub: [@michael-duke](https://github.com/michael-duke)
+- Twitter: [@michael_duke21](https://twitter.com/michael_duke21)
+- LinkedIn: [Michael Mesfin](https://linkedin.com/in/michael-mesfin-haileyesus)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -228,9 +220,8 @@ Example:
 
 > Describe 1 - 3 features you will add to the project.
 
-- [ ] **[new_feature_1]**
-- [ ] **[new_feature_2]**
-- [ ] **[new_feature_3]**
+- [ Refactor the codebase to use Tailwind CSS and React ] **[new_feature_1]**
+- [ Implement a Node JS server backend ] **[new_feature_2]**
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -260,7 +251,7 @@ If you like this project...
 
 > Give credit to everyone who inspired your codebase.
 
-I would like to thank...
+I would like to thank Simon Bao, creator of SuperSimpleDev, for his intuitive JavaScript tutorial. 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
