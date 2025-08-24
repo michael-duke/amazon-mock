@@ -1,12 +1,10 @@
-import products from '../backend/products.json' with {type: 'json'};
+//import products from '../backend/products.json' with {type: 'json'};
 
-const productGrid = document.querySelector('.products-grid');
-console.log(productGrid)
-
-products.forEach(product=>{
+products.forEach((product) => {
   const productContainer = document.createElement('div');
   productContainer.classList.add('product-container');
-  productContainer.innerHTML =  `
+
+  productContainer.innerHTML = `
         <div class="product-image-container">
           <img class="product-image"
             src="${product.image}">
@@ -25,7 +23,7 @@ products.forEach(product=>{
         </div>
 
         <div class="product-price">
-          $${(product.priceCents/100).toFixed(2)}
+          $${(product.priceCents / 100).toFixed(2)}
         </div>
 
         <div class="product-quantity-container">
@@ -50,10 +48,31 @@ products.forEach(product=>{
           Added
         </div>
 
-        <button class="add-to-cart-button button-primary">
+        <button class="add-to-cart-button button-primary" data-product-id="${
+          product.id
+        }">
           Add to Cart
         </button>
       `;
 
-      productGrid.appendChild(productContainer);
-})
+  document.querySelector('.products-grid').appendChild(productContainer);
+});
+
+document.querySelectorAll('.add-to-cart-button').forEach((button) => {
+  button.addEventListener('click', () => {
+    const productId = button.dataset.productId;
+
+    let matchingItem;
+    cart.forEach((item) => {
+      if (item.productId === productId) matchingItem = item;
+    });
+
+    if (matchingItem) matchingItem.quantity++;
+    else
+      cart.push({
+        productId,
+        quantity: 1,
+      });
+    console.log(cart);
+  });
+});
