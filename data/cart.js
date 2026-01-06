@@ -9,12 +9,8 @@ export const cart = {
       quantity: 2,
     },
   ],
+  total: 0,
 };
-
-cart.total = cart.items.reduce(
-  (total, cartItem) => total + cartItem.quantity,
-  0
-);
 
 export function addToCart(productId, selectedQuantity) {
   let matchingItem;
@@ -34,7 +30,11 @@ export function addToCart(productId, selectedQuantity) {
 }
 
 export function updateCartQuantity() {
-  // Update the Cart quantity notificatioon
+  // Update the Cart quantity notification
+  cart.total = cart.items.reduce(
+    (total, cartItem) => total + cartItem.quantity,
+    0
+  );
   document.querySelector(".cart-quantity").innerHTML = cart.total;
 }
 
