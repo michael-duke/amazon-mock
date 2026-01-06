@@ -1,5 +1,5 @@
-//import products from '../backend/products.json' with {type: 'json'};
-import {cart} from "../data/cart.js";
+import products from "../data/products.js";
+import { cart } from "../data/cart.js";
 
 products.forEach((product) => {
   const productContainer = document.createElement("div");
