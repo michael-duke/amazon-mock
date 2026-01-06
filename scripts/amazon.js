@@ -1,5 +1,5 @@
 import products from "../data/products.js";
-import { cart } from "../data/cart.js";
+import cart, { addToCart, updateCartQuantity } from "../data/cart.js";
 
 products.forEach((product) => {
   const productContainer = document.createElement("div");
@@ -66,28 +66,11 @@ document.querySelectorAll(".add-to-cart-button").forEach((button) => {
       `.quantity-selector-${productId}`
     ).value;
 
-    let matchingItem, timeoutId;
+    addToCart(productId, selectedQuantity);
 
-    cart.forEach((item) => {
-      if (item.productId === productId) matchingItem = item;
-    });
+    updateCartQuantity();
 
-    if (matchingItem) matchingItem.quantity += selectedQuantity;
-    else
-      cart.push({
-        productId,
-        quantity: selectedQuantity,
-      });
-
-    console.log(cart);
-
-    const cartQuantity = cart.reduce(
-      (total, item) => (total += item.quantity),
-      0
-    );
-
-    // Update the Cart quantity notificatioon
-    document.querySelector(".cart-quantity").innerHTML = cartQuantity;
+    let timeoutId;
 
     document
       .querySelector(`.added-to-cart-${productId}`)
