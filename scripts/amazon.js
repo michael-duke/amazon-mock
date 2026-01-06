@@ -1,5 +1,7 @@
 import products from "../data/products.js";
-import cart, { addToCart, updateCartQuantity } from "../data/cart.js";
+import { addToCart, updateCartQuantity } from "../data/cart.js";
+
+updateCartQuantity();
 
 products.forEach((product) => {
   const productContainer = document.createElement("div");
