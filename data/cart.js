@@ -35,7 +35,12 @@ export function updateCartQuantity() {
     (total, cartItem) => total + cartItem.quantity,
     0
   );
-  document.querySelector(".cart-quantity").innerHTML = cart.total;
+  const cartQuantityNotifier = document.querySelector(".cart-quantity");
+  if (cartQuantityNotifier) cartQuantityNotifier.innerHTML = cart.total;
+}
+
+export function removeFromCart(productId) {
+  cart.items = cart.items.filter((item) => item.productId !== productId);
 }
 
 export default cart;
