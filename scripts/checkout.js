@@ -7,6 +7,7 @@ console.log(cart);
 cart.items.forEach(({ productId, quantity }) => {
   const cartItemContainer = document.createElement("div");
   cartItemContainer.classList.add("cart-item-container");
+  cartItemContainer.classList.add(`cart-item-container-${productId}`);
 
   const cartItem = products.find((product) => product.id === productId);
 
@@ -85,6 +86,7 @@ cart.items.forEach(({ productId, quantity }) => {
 document.querySelectorAll(".delete-quantity-link").forEach((link) =>
   link.addEventListener("click", () => {
     const { productId } = link.dataset;
-    removeFromCart(productId);
+    removeFromCart(productId); 
+    document.querySelector(`.cart-item-container-${productId}`).remove();
   })
 );
