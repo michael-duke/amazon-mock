@@ -28,33 +28,19 @@ export function addToCart(productId, selectedQuantity) {
       productId,
       quantity: selectedQuantity,
     });
-
-  updateCartQuantity();
-  saveToStorage();
 }
 
-export function updateCartQuantity() {
-  // Calculate the Cart quantity
+export function calculateTotalQuantity() {
   cart.total = cart.items.reduce(
     (total, cartItem) => total + cartItem.quantity,
     0
   );
-
-  // Update cart quantiy notification
-  const cartQuantityNotifier = document.querySelector(".cart-quantity");
-  if (cartQuantityNotifier) cartQuantityNotifier.innerHTML = cart.total;
-
-  // Update the Checkout Header
-  const checkoutHeader = document.querySelector(".return-to-home-link");
   
-  if (checkoutHeader) checkoutHeader.innerHTML = `${cart.total} items`;
+  return cart.total;
 }
 
 export function removeFromCart(productId) {
   cart.items = cart.items.filter((item) => item.productId !== productId);
-  //Recalculate the total after deletion
-  updateCartQuantity();
-  saveToStorage();
 }
 
 export function saveToStorage() {
