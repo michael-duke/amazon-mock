@@ -1,5 +1,5 @@
 export let cart = JSON.parse(localStorage.getItem("cart"));
-console.log(cart.items)
+
 if (!cart)
   cart = {
     items: [
@@ -29,22 +29,31 @@ export function addToCart(productId, selectedQuantity) {
       quantity: selectedQuantity,
     });
 
+  updateCartQuantity();
   saveToStorage();
-  console.log(cart);
 }
 
 export function updateCartQuantity() {
-  // Update the Cart quantity notification
+  // Calculate the Cart quantity
   cart.total = cart.items.reduce(
     (total, cartItem) => total + cartItem.quantity,
     0
   );
+
+  // Update cart quantiy notification
   const cartQuantityNotifier = document.querySelector(".cart-quantity");
   if (cartQuantityNotifier) cartQuantityNotifier.innerHTML = cart.total;
+
+  // Update the Checkout Header
+  const checkoutHeader = document.querySelector(".return-to-home-link");
+  
+  if (checkoutHeader) checkoutHeader.innerHTML = `${cart.total} items`;
 }
 
 export function removeFromCart(productId) {
   cart.items = cart.items.filter((item) => item.productId !== productId);
+  //Recalculate the total after deletion
+  updateCartQuantity();
   saveToStorage();
 }
 
