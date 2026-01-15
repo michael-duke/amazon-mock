@@ -1,8 +1,13 @@
-import cart, { removeFromCart, updateCartQuantity } from "../data/cart.js";
+import cart, {
+  removeFromCart,
+  calculateTotalQuantity,
+  saveToStorage,
+} from "../data/cart.js";
 import products from "../data/products.js";
 import formatCurrency from "./utils/money.js";
 
 updateCartQuantity();
+console.log(cart)
 
 cart.items.forEach(({ productId, quantity }) => {
   const cartItemContainer = document.createElement("div");
@@ -83,10 +88,26 @@ cart.items.forEach(({ productId, quantity }) => {
   document.querySelector(".order-summary").appendChild(cartItemContainer);
 });
 
+function updateCartQuantity() {
+  // Calculate the Cart quantity
+  const total = calculateTotalQuantity();
+
+  // Update the Checkout Header
+  document.querySelector(".return-to-home-link").innerHTML = `${total} items`;
+}
+
 document.querySelectorAll(".delete-quantity-link").forEach((link) =>
   link.addEventListener("click", () => {
     const { productId } = link.dataset;
+
+    // Filter the cart object
     removeFromCart(productId);
+
+    // Recalculate the cart total
+    updateCartQuantity();
+
+    // Save cart object to localStorage
+    saveToStorage();
     document.querySelector(`.cart-item-container-${productId}`).remove();
   })
 );

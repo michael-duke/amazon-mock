@@ -1,5 +1,9 @@
 import products from "../data/products.js";
-import { addToCart, updateCartQuantity } from "../data/cart.js";
+import {
+  addToCart,
+  calculateTotalQuantity,
+  saveToStorage,
+} from "../data/cart.js";
 import formatCurrency from "./utils/money.js";
 
 updateCartQuantity();
@@ -62,6 +66,14 @@ products.forEach((product) => {
   document.querySelector(".products-grid").appendChild(productContainer);
 });
 
+function updateCartQuantity() {
+  // Calculate the Cart quantity
+  const total = calculateTotalQuantity();
+
+  // Update cart quantiy notification
+  document.querySelector(".cart-quantity").innerHTML = total;
+}
+
 document.querySelectorAll(".add-to-cart-button").forEach((button) => {
   button.addEventListener("click", () => {
     const { productId } = button.dataset;
@@ -69,9 +81,14 @@ document.querySelectorAll(".add-to-cart-button").forEach((button) => {
       `.quantity-selector-${productId}`
     ).value;
 
+    // Add to cart object
     addToCart(productId, selectedQuantity);
 
+    // Recalculate the cart total
     updateCartQuantity();
+
+    // Save to localStorage after actions
+    saveToStorage();
 
     let timeoutId;
 
