@@ -7,7 +7,7 @@ import products from "../data/products.js";
 import formatCurrency from "./utils/money.js";
 
 updateCartQuantity();
-console.log(cart)
+console.log(cart);
 
 cart.items.forEach(({ productId, quantity }) => {
   const cartItemContainer = document.createElement("div");
@@ -36,6 +36,10 @@ cart.items.forEach(({ productId, quantity }) => {
             <span> Quantity: <span class="quantity-label">${quantity}</span> </span>
             <span class="update-quantity-link link-primary" data-product-id="${productId}">
             Update
+            </span>
+            <input class="quantity-input quantity-input-${productId}">
+            <span class="save-quantity-link link-primary" data-product-id="${productId}">
+            Save
             </span>
             <span class="delete-quantity-link link-primary" data-product-id="${productId}">
             Delete
@@ -109,5 +113,29 @@ document.querySelectorAll(".delete-quantity-link").forEach((link) =>
     // Save cart object to localStorage
     saveToStorage();
     document.querySelector(`.cart-item-container-${productId}`).remove();
+  })
+);
+
+document.querySelectorAll(".update-quantity-link").forEach((link) =>
+  link.addEventListener("click", () => {
+    const { productId } = link.dataset;
+
+    console.log(productId, "forupdate");
+
+    document
+      .querySelector(`.cart-item-container-${productId}`)
+      .classList.add("is-editing-quantity");
+
+    document.querySelector(`.quantity-input-${productId}`).value = cart.items.find(
+      (i) => i.productId === productId
+    ).quantity;
+    // Filter the cart object
+    // updateCart(productId);
+
+    // // Recalculate the cart total
+    // updateCartQuantity();
+
+    // // Save cart object to localStorage
+    // saveToStorage();
   })
 );

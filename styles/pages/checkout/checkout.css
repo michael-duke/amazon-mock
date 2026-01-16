@@ -68,6 +68,26 @@
   }
 }
 
+.quantity-input {
+  width: 30px;
+  display: none;
+}
+
+.save-quantity-link {
+  display: none;
+}
+
+.is-editing-quantity {
+  .quantity-input,
+  .save-quantity-link {
+    display: initial;
+  }
+  .quantity-label,
+  .update-quantity-link{
+    display: none;
+  }
+}
+
 .delivery-date {
   color: rgb(0, 118, 0);
   font-weight: 700;
