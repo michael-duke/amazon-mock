@@ -1,4 +1,4 @@
-export let cart = JSON.parse(localStorage.getItem("cart"));
+let cart = JSON.parse(localStorage.getItem("cart"));
 
 if (!cart)
   cart = {
@@ -33,10 +33,15 @@ export function addToCart(productId, selectedQuantity) {
 export function calculateTotalQuantity() {
   cart.total = cart.items.reduce(
     (total, cartItem) => total + cartItem.quantity,
-    0
+    0,
   );
-  
+
   return cart.total;
+}
+
+export function updateQuantity(productId, newQuantity) {
+  let matchingItem = cart.items.find((i) => i.productId === productId);
+  matchingItem.quantity = newQuantity;
 }
 
 export function removeFromCart(productId) {
