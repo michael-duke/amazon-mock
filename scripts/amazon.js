@@ -2,7 +2,6 @@ import products from "../data/products.js";
 import {
   addToCart,
   calculateTotalQuantity,
-  saveToStorage,
 } from "../data/cart.js";
 import formatCurrency from "./utils/money.js";
 
@@ -86,9 +85,6 @@ document.querySelectorAll(".add-to-cart-button").forEach((button) => {
 
     // Recalculate the cart total
     updateCartQuantity();
-
-    // Save to localStorage after actions
-    saveToStorage();
 
     let timeoutId;
 

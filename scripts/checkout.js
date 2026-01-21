@@ -1,7 +1,6 @@
 import cart, {
   removeFromCart,
   calculateTotalQuantity,
-  saveToStorage,
   updateQuantity,
 } from "../data/cart.js";
 import deliverOptions from "../data/deliveryOptions.js";
@@ -105,11 +104,9 @@ document.querySelectorAll(".delete-quantity-link").forEach((link) =>
     // Filter the cart object
     removeFromCart(productId);
 
-    // Recalculate the cart total
+    // Repaint the Chekout header
     updateCartQuantity();
 
-    // Save cart object to localStorage
-    saveToStorage();
     document.querySelector(`.cart-item-container-${productId}`).remove();
   }),
 );
@@ -139,9 +136,8 @@ document.querySelectorAll(".save-quantity-link").forEach((link) =>
 
     updateQuantity(productId, newQuantity);
 
-    // Update the cartQuantity and Save the new data.
+    // Update the cartQuantity.
     updateCartQuantity();
-    saveToStorage();
 
     // Reset the UI as it was and update the quantity label.
     document
