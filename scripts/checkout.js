@@ -6,9 +6,11 @@ import cart, {
 } from "../data/cart.js";
 import products from "../data/products.js";
 import formatCurrency from "./utils/money.js";
+import dayjs from "https://unpkg.com/dayjs@1.11.19/esm/index.js";
 
 updateCartQuantity();
 console.log(cart);
+console.log(dayjs().format('D'))
 
 cart.items.forEach(({ productId, quantity }) => {
   const cartItemContainer = document.createElement("div");
