@@ -2,6 +2,7 @@ import cart, {
   removeFromCart,
   calculateTotalQuantity,
   saveToStorage,
+  updateQuantity,
 } from "../data/cart.js";
 import products from "../data/products.js";
 import formatCurrency from "./utils/money.js";
@@ -113,29 +114,45 @@ document.querySelectorAll(".delete-quantity-link").forEach((link) =>
     // Save cart object to localStorage
     saveToStorage();
     document.querySelector(`.cart-item-container-${productId}`).remove();
-  })
+  }),
 );
 
 document.querySelectorAll(".update-quantity-link").forEach((link) =>
   link.addEventListener("click", () => {
     const { productId } = link.dataset;
 
-    console.log(productId, "forupdate");
-
+    // Put the cart item in editing mode
     document
       .querySelector(`.cart-item-container-${productId}`)
       .classList.add("is-editing-quantity");
 
-    document.querySelector(`.quantity-input-${productId}`).value = cart.items.find(
-      (i) => i.productId === productId
-    ).quantity;
-    // Filter the cart object
-    // updateCart(productId);
+    // Set the value of the quantity input
+    document.querySelector(`.quantity-input-${productId}`).value =
+      cart.items.find((i) => i.productId === productId).quantity;
+  }),
+);
 
-    // // Recalculate the cart total
-    // updateCartQuantity();
+document.querySelectorAll(".save-quantity-link").forEach((link) =>
+  link.addEventListener("click", () => {
+    const { productId } = link.dataset;
 
-    // // Save cart object to localStorage
-    // saveToStorage();
-  })
+    // Update the quantity of the focused item
+    const newQuantity = +document.querySelector(`.quantity-input-${productId}`)
+      .value;
+
+    updateQuantity(productId, newQuantity);
+
+    // Update the cartQuantity and Save the new data.
+    updateCartQuantity();
+    saveToStorage();
+
+    // Reset the UI as it was and update the quantity label.
+    document
+      .querySelector(`.cart-item-container-${productId}`)
+      .classList.remove("is-editing-quantity");
+
+    document.querySelector(
+      `.cart-item-container-${productId} .product-quantity span.quantity-label`,
+    ).innerText = newQuantity;
+  }),
 );
