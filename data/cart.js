@@ -29,8 +29,11 @@ export function addToCart(productId, selectedQuantity) {
     cart.items.push({
       productId,
       quantity: selectedQuantity,
-      deliveryOptionId: "1"
+      deliveryOptionId: "1",
     });
+
+  calculateTotalQuantity();
+  saveToStorage();
 }
 
 export function calculateTotalQuantity() {
@@ -45,10 +48,21 @@ export function calculateTotalQuantity() {
 export function updateQuantity(productId, newQuantity) {
   let matchingItem = cart.items.find((i) => i.productId === productId);
   matchingItem.quantity = newQuantity;
+  calculateTotalQuantity();
+  saveToStorage();
+  
 }
 
 export function removeFromCart(productId) {
   cart.items = cart.items.filter((item) => item.productId !== productId);
+  calculateTotalQuantity();
+  saveToStorage();
+}
+
+export function updateDeliveryOption(productId, newDeliveryOptionId) {
+  const cartItem = cart.items.find((item) => item.productId === productId);
+  cartItem.deliveryOptionId = newDeliveryOptionId;
+  saveToStorage();
 }
 
 export function saveToStorage() {
