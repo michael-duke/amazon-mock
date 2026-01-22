@@ -1,6 +1,6 @@
 import dayjs from "https://unpkg.com/dayjs@1.11.19/esm/index.js";
 
-function formatDate(deliveryDays) {
+function formatBusinessDate(deliveryDays) {
   let date = dayjs();
   let daysCounted = 0;
 
@@ -20,4 +20,4 @@ export const isWeekend = (date) => {
   return day === 0 || day === 6;
 };
 
-export default formatDate;
+export default formatBusinessDate;
