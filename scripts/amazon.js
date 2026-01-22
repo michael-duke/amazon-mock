@@ -1,9 +1,7 @@
 import products from "../data/products.js";
-import {
-  addToCart,
-  calculateTotalQuantity,
-} from "../data/cart.js";
+import { addToCart, calculateTotalQuantity } from "../data/cart.js";
 import formatCurrency from "./utils/money.js";
+import formatDeliveryDate from "./utils/date.js";
 
 updateCartQuantity();
 
@@ -77,7 +75,7 @@ document.querySelectorAll(".add-to-cart-button").forEach((button) => {
   button.addEventListener("click", () => {
     const { productId } = button.dataset;
     const selectedQuantity = +document.querySelector(
-      `.quantity-selector-${productId}`
+      `.quantity-selector-${productId}`,
     ).value;
 
     // Add to cart object

@@ -9,7 +9,7 @@ import deliverOptions, {
 } from "../../data/deliveryOptions.js";
 import { getProduct } from "../../data/products.js";
 import formatCurrency from "../utils/money.js";
-import formatDate from "../utils/date.js";
+import formatDeliveryDate from "../utils/date.js";
 import renderPaymentSummary from "./paymentSummary.js";
 import renderCheckoutHeader from "./checkoutHeader.js";
 
@@ -31,7 +31,7 @@ function renderOrderSummary() {
 
     const cartItem = getProduct(item.productId);
 
-    const deliveryDate = formatDate(
+    const deliveryDate = formatDeliveryDate(
       getDeliveryOption(item.deliveryOptionId).deliveryDays,
     );
 
@@ -93,7 +93,7 @@ function renderOrderSummary() {
               ${isChecked ? "checked" : ""}
               />
               <div>
-              <div class="delivery-option-date">${formatDate(option.deliveryDays)}</div>
+              <div class="delivery-option-date">${formatDeliveryDate(option.deliveryDays)}</div>
               <div class="delivery-option-price">${option.priceCents === 0 ? "FREE" : "$" + formatCurrency(option.priceCents)} - Shipping</div>
               </div>
           </div>
