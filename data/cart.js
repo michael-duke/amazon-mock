@@ -1,3 +1,5 @@
+import { getProduct } from "./products.js";
+
 let cart = JSON.parse(localStorage.getItem("cart"));
 
 if (!cart)
@@ -14,7 +16,8 @@ if (!cart)
         deliveryOptionId: "2",
       },
     ],
-    total: 0,
+    totalQuantity: 0,
+    totalPrice: 0,
   };
 
 export function addToCart(productId, selectedQuantity) {
@@ -43,6 +46,14 @@ export function calculateTotalQuantity() {
   );
 
   return cart.total;
+}
+
+export function calculateTotalPrice() {
+  return cart.items.reduce(
+    (totalPrice, cartItem) =>
+      totalPrice + getProduct(cartItem.productId).priceCents * cartItem.quantity,
+    0,
+  );
 }
 
 export function updateQuantity(productId, newQuantity) {
