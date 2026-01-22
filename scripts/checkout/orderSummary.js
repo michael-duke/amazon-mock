@@ -11,11 +11,13 @@ import { getProduct } from "../../data/products.js";
 import formatCurrency from "../utils/money.js";
 import formatDate from "../utils/date.js";
 import renderPaymentSummary from "./paymentSummary.js";
+import renderCheckoutHeader from "./checkoutHeader.js";
 
 console.log(cart);
 
 function renderOrderSummary() {
-  updateCartQuantity();
+  // Inital render with correct quantity
+  renderCheckoutHeader();
 
   const orderSummary = document.querySelector(".order-summary");
 
@@ -54,7 +56,7 @@ function renderOrderSummary() {
               <span class="update-quantity-link link-primary" data-product-id="${item.productId}">
               Update
               </span>
-              <input class="quantity-input quantity-input-${item.productId}">
+              <input type="number" class="quantity-input quantity-input-${item.productId}">
               <span class="save-quantity-link link-primary" data-product-id="${item.productId}">
               Save
               </span>
@@ -101,14 +103,6 @@ function renderOrderSummary() {
     return deliveryOptionsHTML;
   }
 
-  function updateCartQuantity() {
-    // Calculate the Cart quantity
-    const total = calculateTotalQuantity();
-
-    // Update the Checkout Header
-    document.querySelector(".return-to-home-link").innerHTML = `${total} items`;
-  }
-
   document.querySelectorAll(".delete-quantity-link").forEach((link) =>
     link.addEventListener("click", () => {
       const { productId } = link.dataset;
@@ -117,9 +111,10 @@ function renderOrderSummary() {
       removeFromCart(productId);
 
       // Repaint the Chekout header
-      updateCartQuantity();
+      renderCheckoutHeader();
 
-      document.querySelector(`.cart-item-container-${productId}`).remove();
+      // Re-render the order summary instead of .delete()
+      renderOrderSummary();
 
       // Re-render Payment summary
       renderPaymentSummary();
@@ -153,16 +148,17 @@ function renderOrderSummary() {
       updateQuantity(productId, newQuantity);
 
       // Update the cartQuantity.
-      updateCartQuantity();
+      renderCheckoutHeader();
 
       // Reset the UI as it was and update the quantity label.
-      document
-        .querySelector(`.cart-item-container-${productId}`)
-        .classList.remove("is-editing-quantity");
+      // document
+      //   .querySelector(`.cart-item-container-${productId}`)
+      //   .classList.remove("is-editing-quantity");
 
-      document.querySelector(
-        `.cart-item-container-${productId} .product-quantity span.quantity-label`,
-      ).innerText = newQuantity;
+      // document.querySelector(
+      //   `.cart-item-container-${productId} .product-quantity span.quantity-label`,
+      // ).innerText = newQuantity;
+      renderOrderSummary();
 
       // Re-render Payment summary
       renderPaymentSummary();
