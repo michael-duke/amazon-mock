@@ -4,7 +4,9 @@ import cart, {
   updateQuantity,
   updateDeliveryOption,
 } from "../../data/cart.js";
-import deliverOptions from "../../data/deliveryOptions.js";
+import deliverOptions, {
+  getDeliveryOption,
+} from "../../data/deliveryOptions.js";
 import { getProduct } from "../../data/products.js";
 import formatCurrency from "../utils/money.js";
 import formatDate from "../utils/date.js";
@@ -12,7 +14,6 @@ import formatDate from "../utils/date.js";
 console.log(cart);
 
 function renderOrderSummary() {
-  
   updateCartQuantity();
 
   //Refresh the orderSummary for re-renders
@@ -26,8 +27,7 @@ function renderOrderSummary() {
     const cartItem = getProduct(item.productId);
 
     const deliveryDate = formatDate(
-      deliverOptions.find((option) => option.id === item.deliveryOptionId)
-        .deliveryDays,
+      getDeliveryOption(item.deliveryOptionId).deliveryDays,
     );
 
     cartItemContainer.innerHTML = `
