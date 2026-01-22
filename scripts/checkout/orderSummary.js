@@ -5,7 +5,7 @@ import cart, {
   updateDeliveryOption,
 } from "../../data/cart.js";
 import deliverOptions from "../../data/deliveryOptions.js";
-import products from "../../data/products.js";
+import { getProduct } from "../../data/products.js";
 import formatCurrency from "../utils/money.js";
 import formatDate from "../utils/date.js";
 
@@ -23,7 +23,7 @@ function renderOrderSummary() {
     cartItemContainer.classList.add("cart-item-container");
     cartItemContainer.classList.add(`cart-item-container-${item.productId}`);
 
-    const cartItem = products.find((product) => product.id === item.productId);
+    const cartItem = getProduct(item.productId);
 
     const deliveryDate = formatDate(
       deliverOptions.find((option) => option.id === item.deliveryOptionId)
