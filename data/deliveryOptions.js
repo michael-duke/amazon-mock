@@ -1,3 +1,10 @@
+export function getDeliveryOption(deliveryOptionId) {
+  return (
+    deliverOptions.find((option) => option.id === deliveryOptionId) ||
+    deliverOptions[0]
+  );
+}
+
 const deliverOptions = [
   {
     id: "1",

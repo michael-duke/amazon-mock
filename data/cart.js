@@ -1,3 +1,4 @@
+import { getDeliveryOption } from "./deliveryOptions.js";
 import { getProduct } from "./products.js";
 
 let cart = JSON.parse(localStorage.getItem("cart"));
@@ -51,7 +52,16 @@ export function calculateTotalQuantity() {
 export function calculateTotalPrice() {
   return cart.items.reduce(
     (totalPrice, cartItem) =>
-      totalPrice + getProduct(cartItem.productId).priceCents * cartItem.quantity,
+      totalPrice +
+      getProduct(cartItem.productId).priceCents * cartItem.quantity,
+    0,
+  );
+}
+
+export function calculateTotalShipping() {
+  return cart.items.reduce(
+    (totalShipping, cartItem) =>
+      totalShipping + getDeliveryOption(cartItem.deliveryOptionId).priceCents,
     0,
   );
 }
