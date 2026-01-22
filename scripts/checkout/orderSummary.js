@@ -10,14 +10,17 @@ import deliverOptions, {
 import { getProduct } from "../../data/products.js";
 import formatCurrency from "../utils/money.js";
 import formatDate from "../utils/date.js";
+import renderPaymentSummary from "./paymentSummary.js";
 
 console.log(cart);
 
 function renderOrderSummary() {
   updateCartQuantity();
 
+  const orderSummary = document.querySelector(".order-summary");
+
   //Refresh the orderSummary for re-renders
-  document.querySelector(".order-summary").innerHTML = "";
+  orderSummary.innerHTML = "";
 
   cart.items.forEach((item) => {
     const cartItemContainer = document.createElement("div");
@@ -70,7 +73,7 @@ function renderOrderSummary() {
       </div>  
     </div>     
     `;
-    document.querySelector(".order-summary").appendChild(cartItemContainer);
+    orderSummary.appendChild(cartItemContainer);
   });
 
   function generateDeliveryOptions(item) {
@@ -117,6 +120,9 @@ function renderOrderSummary() {
       updateCartQuantity();
 
       document.querySelector(`.cart-item-container-${productId}`).remove();
+
+      // Re-render Payment summary
+      renderPaymentSummary();
     }),
   );
 
@@ -157,6 +163,9 @@ function renderOrderSummary() {
       document.querySelector(
         `.cart-item-container-${productId} .product-quantity span.quantity-label`,
       ).innerText = newQuantity;
+
+      // Re-render Payment summary
+      renderPaymentSummary();
     }),
   );
 
@@ -166,6 +175,7 @@ function renderOrderSummary() {
     option.addEventListener("click", () => {
       updateDeliveryOption(productId, deliveryOptionId);
       renderOrderSummary();
+      renderPaymentSummary();
     });
   });
 }
