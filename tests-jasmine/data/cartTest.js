@@ -1,9 +1,25 @@
-import { cart, loadFromStorage, addToCart } from "../../data/cart.js";
+import {
+  cart,
+  loadFromStorage,
+  addToCart,
+  calculateTotalQuantity,
+  calculateTotalPrice,
+  calculateTotalShipping,
+  removeFromCart,
+} from "../../data/cart.js";
+
+const mockCart = {
+  items: [],
+  totalQuantity: 0,
+  totalPrice: 0,
+};
 
 describe("Test Suite: Add to Cart", () => {
-  it("Adds an existing product to the Cart", () => {
+  beforeEach(() => {
     spyOn(localStorage, "setItem");
-
+    Object.assign(cart, mockCart);
+  });
+  it("Adds an existing product to the Cart", () => {
     spyOn(localStorage, "getItem").and.callFake(() => {
       return JSON.stringify({
         items: [
@@ -15,6 +31,8 @@ describe("Test Suite: Add to Cart", () => {
         ],
       });
     });
+    //Load the cart that has been mocked
+    loadFromStorage();
 
     addToCart("a82c6bac-3067-4e68-a5ba-d827ac0be010");
     expect(cart.items.length).toEqual(1);
@@ -25,10 +43,8 @@ describe("Test Suite: Add to Cart", () => {
     expect(cart.items[0].quantity).toEqual(2);
   });
   it("Adds a new product to the Cart", () => {
-    spyOn(localStorage, "setItem");
-
     spyOn(localStorage, "getItem").and.callFake(() => {
-      return JSON.stringify({ items: [], total: 0 });
+      return JSON.stringify({ items: [] });
     });
 
     //Load the cart that has been mocked
@@ -41,5 +57,101 @@ describe("Test Suite: Add to Cart", () => {
       "a82c6bac-3067-4e68-a5ba-d827ac0be010",
     );
     expect(cart.items[0].quantity).toEqual(1);
+  });
+});
+
+describe("Test Suite: Calculates the totals", () => {
+  beforeEach(() => {
+    spyOn(localStorage, "setItem");
+    Object.assign(cart, mockCart);
+  });
+  it("Calculates the total quantity/items", () => {
+    console.log(cart);
+    spyOn(localStorage, "getItem").and.callFake(() => {
+      return JSON.stringify({
+        items: [
+          {
+            productId: "83d4ca15-0f35-48f5-b7a3-1ea210004f2e",
+            quantity: 3,
+          },
+          {
+            productId: "15b6fc6f-327a-4ec4-896f-486349e85a3d",
+            quantity: 2,
+          },
+        ],
+      });
+    });
+
+    //Load the cart that has been mocked
+    loadFromStorage();
+
+    expect(calculateTotalQuantity()).toEqual(5);
+  });
+  it("Calculates the total price", () => {
+    spyOn(localStorage, "getItem").and.callFake(() => {
+      return JSON.stringify({
+        items: [
+          {
+            productId: "83d4ca15-0f35-48f5-b7a3-1ea210004f2e",
+            quantity: 3,
+          },
+          {
+            productId: "15b6fc6f-327a-4ec4-896f-486349e85a3d",
+            quantity: 2,
+          },
+        ],
+      });
+    });
+    loadFromStorage();
+    expect(calculateTotalPrice()).toEqual(6587);
+  });
+  it("Calculates the total shipping and handling", () => {
+    spyOn(localStorage, "getItem").and.callFake(() => {
+      return JSON.stringify({
+        items: [
+          {
+            productId: "83d4ca15-0f35-48f5-b7a3-1ea210004f2e",
+            quantity: 3,
+            deliveryOptionId: "2",
+          },
+          {
+            productId: "15b6fc6f-327a-4ec4-896f-486349e85a3d",
+            quantity: 2,
+            deliveryOptionId: "3",
+          },
+        ],
+      });
+    });
+    loadFromStorage();
+    expect(calculateTotalShipping()).toEqual(1498);
+  });
+});
+
+describe("Test Suite: Remove from Cart", () => {
+  beforeEach(() => {
+    spyOn(localStorage, "setItem");
+    Object.assign(cart, mockCart);
+  });
+  it("Removes item from cart", () => {
+    spyOn(localStorage, "getItem").and.callFake(() =>
+      JSON.stringify({
+        items: [
+          {
+            productId: "83d4ca15-0f35-48f5-b7a3-1ea210004f2e",
+            quantity: 3,
+            deliveryOptionId: "2",
+          },
+          {
+            productId: "15b6fc6f-327a-4ec4-896f-486349e85a3d",
+            quantity: 2,
+            deliveryOptionId: "3",
+          },
+        ],
+      }),
+    );
+    loadFromStorage();
+    removeFromCart("83d4ca15-0f35-48f5-b7a3-1ea210004f2e");
+    expect(cart.items.length).toEqual(1);
+    expect(localStorage.setItem).toHaveBeenCalledTimes(1);
   });
 });
