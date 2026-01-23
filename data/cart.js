@@ -1,11 +1,19 @@
 import { getDeliveryOption } from "./deliveryOptions.js";
 import { getProduct } from "./products.js";
 
-let cart = JSON.parse(localStorage.getItem("cart"));
+export const cart = {
+  items: [],
+  totalQuantity: 0,
+  totalPrice: 0,
+};
 
-if (!cart)
-  cart = {
-    items: [
+loadFromStorage();
+
+export function loadFromStorage() {
+  const storedData = JSON.parse(localStorage.getItem("cart"));
+  if (storedData) Object.assign(cart, storedData);
+  else {
+    cart.items = [
       {
         productId: "83d4ca15-0f35-48f5-b7a3-1ea210004f2e",
         quantity: 1,
@@ -16,12 +24,13 @@ if (!cart)
         quantity: 2,
         deliveryOptionId: "2",
       },
-    ],
-    totalQuantity: 0,
-    totalPrice: 0,
-  };
+    ];
+    cart.totalQuantity = calculateTotalQuantity();
+    cart.totalPrice = calculateTotalPrice();
+  }
+}
 
-export function addToCart(productId, selectedQuantity) {
+export function addToCart(productId, selectedQuantity = 1) {
   let matchingItem;
 
   cart.items.forEach((cartItem) => {
@@ -41,21 +50,22 @@ export function addToCart(productId, selectedQuantity) {
 }
 
 export function calculateTotalQuantity() {
-  cart.total = cart.items.reduce(
+  cart.totalQuantity = cart.items.reduce(
     (total, cartItem) => total + cartItem.quantity,
     0,
   );
 
-  return cart.total;
+  return cart.totalQuantity;
 }
 
 export function calculateTotalPrice() {
-  return cart.items.reduce(
-    (totalPrice, cartItem) =>
-      totalPrice +
-      getProduct(cartItem.productId).priceCents * cartItem.quantity,
+  cart.totalPrice = cart.items.reduce(
+    (total, cartItem) =>
+      total + getProduct(cartItem.productId).priceCents * cartItem.quantity,
     0,
   );
+
+  return cart.totalPrice;
 }
 
 export function calculateTotalShipping() {
@@ -70,12 +80,14 @@ export function updateQuantity(productId, newQuantity) {
   let matchingItem = cart.items.find((i) => i.productId === productId);
   matchingItem.quantity = newQuantity;
   calculateTotalQuantity();
+  calculateTotalPrice();
   saveToStorage();
 }
 
 export function removeFromCart(productId) {
   cart.items = cart.items.filter((item) => item.productId !== productId);
   calculateTotalQuantity();
+  calculateTotalPrice();
   saveToStorage();
 }
 
@@ -89,5 +101,3 @@ export function updateDeliveryOption(productId, newDeliveryOptionId) {
 export function saveToStorage() {
   localStorage.setItem("cart", JSON.stringify(cart));
 }
-
-export default cart;
