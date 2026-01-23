@@ -1,6 +1,6 @@
-import cart, {
+import {
+  cart,
   removeFromCart,
-  calculateTotalQuantity,
   updateQuantity,
   updateDeliveryOption,
 } from "../../data/cart.js";

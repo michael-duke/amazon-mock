@@ -1,4 +1,5 @@
-import cart, {
+import {
+  cart,
   calculateTotalPrice,
   calculateTotalShipping,
 } from "../../data/cart.js";
