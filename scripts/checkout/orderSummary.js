@@ -4,7 +4,7 @@ import {
   updateQuantity,
   updateDeliveryOption,
 } from "../../data/cart.js";
-import deliverOptions, {
+import deliveryOptions, {
   getDeliveryOption,
 } from "../../data/deliveryOptions.js";
 import { getProduct } from "../../data/products.js";
@@ -51,7 +51,7 @@ function renderOrderSummary() {
               ${cartItem.name}
           </div>
           <div class="product-price">$${formatCurrency(cartItem.priceCents)}</div>
-          <div class="product-quantity">
+          <div class="product-quantity product-quantity-${item.productId}">
               <span> Quantity: <span class="quantity-label">${item.quantity}</span> </span>
               <span class="update-quantity-link link-primary" data-product-id="${item.productId}">
               Update
@@ -60,7 +60,8 @@ function renderOrderSummary() {
               <span class="save-quantity-link link-primary" data-product-id="${item.productId}">
               Save
               </span>
-              <span class="delete-quantity-link link-primary" data-product-id="${item.productId}">
+              <span class="delete-quantity-link delete-quantity-link-${item.productId} 
+              link-primary" data-product-id="${item.productId}">
               Delete
               </span>
           </div>
@@ -81,7 +82,7 @@ function renderOrderSummary() {
   function generateDeliveryOptions(item) {
     let deliveryOptionsHTML = "";
 
-    deliverOptions.forEach((option) => {
+    deliveryOptions.forEach((option) => {
       const isChecked = item.deliveryOptionId === option.id;
       deliveryOptionsHTML += `
          <div class="delivery-option" data-product-id="${item.productId}"

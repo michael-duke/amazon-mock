@@ -1,11 +1,11 @@
 export function getDeliveryOption(deliveryOptionId) {
   return (
-    deliverOptions.find((option) => option.id === deliveryOptionId) ||
-    deliverOptions[0]
+    deliveryOptions.find((option) => option.id === deliveryOptionId) ||
+    deliveryOptions[0]
   );
 }
 
-const deliverOptions = [
+const deliveryOptions = [
   {
     id: "1",
     deliveryDays: 7,
@@ -23,4 +23,4 @@ const deliverOptions = [
   },
 ];
 
-export default deliverOptions;
+export default deliveryOptions;
