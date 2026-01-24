@@ -17,7 +17,7 @@ console.log(cart);
 
 function renderOrderSummary() {
   // Inital render with correct quantity
-  renderCheckoutHeader();
+  //renderCheckoutHeader();
 
   const orderSummary = document.querySelector(".order-summary");
 
@@ -151,13 +151,6 @@ function renderOrderSummary() {
       renderCheckoutHeader();
 
       // Reset the UI as it was and update the quantity label.
-      // document
-      //   .querySelector(`.cart-item-container-${productId}`)
-      //   .classList.remove("is-editing-quantity");
-
-      // document.querySelector(
-      //   `.cart-item-container-${productId} .product-quantity span.quantity-label`,
-      // ).innerText = newQuantity;
       renderOrderSummary();
 
       // Re-render Payment summary
