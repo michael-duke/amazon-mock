@@ -26,7 +26,7 @@ describe("Automated tests for Cart", () => {
             {
               productId: "a82c6bac-3067-4e68-a5ba-d827ac0be010",
               quantity: 1,
-              deliverOptionId: "2",
+              deliveryOptionId: "2",
             },
           ],
         });
@@ -37,6 +37,22 @@ describe("Automated tests for Cart", () => {
       addToCart("a82c6bac-3067-4e68-a5ba-d827ac0be010");
       expect(cart.items.length).toEqual(1);
       expect(localStorage.setItem).toHaveBeenCalledTimes(1);
+      expect(localStorage.setItem).toHaveBeenCalledWith(
+        "cart",
+        JSON.stringify({
+          items: [
+            {
+              productId: "a82c6bac-3067-4e68-a5ba-d827ac0be010",
+              quantity: 2,
+              deliveryOptionId: "2",
+            },
+          ],
+          // Since when adding the keys totalQuantity
+          // and totalPrice are changed we add them here
+          totalQuantity: calculateTotalQuantity(),
+          totalPrice: calculateTotalPrice(),
+        }),
+      );
       expect(cart.items[0].productId).toEqual(
         "a82c6bac-3067-4e68-a5ba-d827ac0be010",
       );
@@ -53,6 +69,22 @@ describe("Automated tests for Cart", () => {
       addToCart("a82c6bac-3067-4e68-a5ba-d827ac0be010");
       expect(cart.items.length).toEqual(1);
       expect(localStorage.setItem).toHaveBeenCalledTimes(1);
+      expect(localStorage.setItem).toHaveBeenCalledWith(
+        "cart",
+        JSON.stringify({
+          items: [
+            {
+              productId: "a82c6bac-3067-4e68-a5ba-d827ac0be010",
+              quantity: 1,
+              deliveryOptionId: "1",
+            },
+          ],
+          // Since when adding the keys totalQuantity
+          // and totalPrice are changed we add them here
+          totalQuantity: calculateTotalQuantity(),
+          totalPrice: calculateTotalPrice(),
+        }),
+      );
       expect(cart.items[0].productId).toEqual(
         "a82c6bac-3067-4e68-a5ba-d827ac0be010",
       );
@@ -132,7 +164,32 @@ describe("Automated tests for Cart", () => {
       spyOn(localStorage, "setItem");
       Object.assign(cart, mockCart);
     });
-    it("Removes item from cart", () => {
+    it("Removes item that is in the cart", () => {
+      spyOn(localStorage, "getItem").and.callFake(() =>
+        JSON.stringify({
+          items: [
+            {
+              productId: "83d4ca15-0f35-48f5-b7a3-1ea210004f2e",
+              quantity: 3,
+              deliveryOptionId: "2",
+            },
+          ],
+        }),
+      );
+      loadFromStorage();
+      removeFromCart("83d4ca15-0f35-48f5-b7a3-1ea210004f2e");
+      expect(cart.items.length).toEqual(0);
+      expect(localStorage.setItem).toHaveBeenCalledTimes(1);
+      expect(localStorage.setItem).toHaveBeenCalledWith(
+        "cart",
+        JSON.stringify({
+          items: [],
+          totalQuantity: 0,
+          totalPrice: 0,
+        }),
+      );
+    });
+    it("Removes item that is not in the cart", () => {
       spyOn(localStorage, "getItem").and.callFake(() =>
         JSON.stringify({
           items: [
@@ -150,9 +207,28 @@ describe("Automated tests for Cart", () => {
         }),
       );
       loadFromStorage();
-      removeFromCart("83d4ca15-0f35-48f5-b7a3-1ea210004f2e");
-      expect(cart.items.length).toEqual(1);
+      removeFromCart("73d4ca15-0f35-48f5-b7a3-1ea210004f2e");
+      expect(cart.items.length).toEqual(2);
       expect(localStorage.setItem).toHaveBeenCalledTimes(1);
+      expect(localStorage.setItem).toHaveBeenCalledWith(
+        "cart",
+        JSON.stringify({
+          items: [
+            {
+              productId: "83d4ca15-0f35-48f5-b7a3-1ea210004f2e",
+              quantity: 3,
+              deliveryOptionId: "2",
+            },
+            {
+              productId: "15b6fc6f-327a-4ec4-896f-486349e85a3d",
+              quantity: 2,
+              deliveryOptionId: "3",
+            },
+          ],
+          totalQuantity: calculateTotalQuantity(),
+          totalPrice: calculateTotalPrice(),
+        }),
+      );
     });
   });
 });
