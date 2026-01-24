@@ -16,9 +16,6 @@ import renderCheckoutHeader from "./checkoutHeader.js";
 console.log(cart);
 
 function renderOrderSummary() {
-  // Inital render with correct quantity
-  //renderCheckoutHeader();
-
   const orderSummary = document.querySelector(".order-summary");
 
   //Refresh the orderSummary for re-renders
