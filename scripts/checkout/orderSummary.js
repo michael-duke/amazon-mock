@@ -44,10 +44,10 @@ function renderOrderSummary() {
           />
 
           <div class="cart-item-details">
-          <div class="product-name">
+          <div class="product-name product-name-${item.productId}">
               ${cartItem.name}
           </div>
-          <div class="product-price">$${formatCurrency(cartItem.priceCents)}</div>
+          <div class="product-price product-price-${item.productId}">$${formatCurrency(cartItem.priceCents)}</div>
           <div class="product-quantity product-quantity-${item.productId}">
               <span> Quantity: <span class="quantity-label">${item.quantity}</span> </span>
               <span class="update-quantity-link link-primary" data-product-id="${item.productId}">
