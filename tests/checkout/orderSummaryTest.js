@@ -1,5 +1,10 @@
 import renderOrderSummary from "../../scripts/checkout/orderSummary.js";
-import { cart, loadFromStorage } from "../../data/cart.js";
+import {
+  cart,
+  loadFromStorage,
+  calculateTotalPrice,
+  calculateTotalShipping,
+} from "../../data/cart.js";
 import { getProduct } from "../../data/products.js";
 import formatCurrency from "../../scripts/utils/money.js";
 
@@ -33,9 +38,11 @@ describe("Test Suite: Render order summaray", () => {
     loadFromStorage();
     renderOrderSummary();
   });
+
   afterEach(() => {
     document.querySelector(".test-container").innerHTML = "";
   });
+
   it("Displays the cart", () => {
     expect(document.querySelectorAll(".cart-item-container").length).toEqual(2);
     expect(
@@ -57,10 +64,8 @@ describe("Test Suite: Render order summaray", () => {
       document.querySelector(`.product-price-${productId2}`).innerText,
     ).toContain(`$${formatCurrency(getProduct(productId2).priceCents)}`);
   });
-  it("Removes a product from the page", () => {
-    const productId1 = "83d4ca15-0f35-48f5-b7a3-1ea210004f2e";
-    const productId2 = "15b6fc6f-327a-4ec4-896f-486349e85a3d";
 
+  it("Removes a product from the page", () => {
     // Simulate Delete button click
     document.querySelector(`.delete-quantity-link-${productId1}`).click();
     expect(document.querySelectorAll(".cart-item-container").length).toEqual(1);
@@ -72,5 +77,20 @@ describe("Test Suite: Render order summaray", () => {
     ).not.toEqual(null);
     expect(cart.items.length).toEqual(1);
     expect(cart.items[0].productId).toEqual(productId2);
+  });
+
+  it("Updates the delivery option", () => {
+    document.querySelector(`.delivery-option-${productId1}-3`).click();
+    expect(
+      document.querySelector(`.delivery-option-input-${productId1}-3`).checked,
+    ).toBeTrue();
+    expect(cart.items.length).toEqual(2);
+    expect(cart.items[0].deliveryOptionId).toEqual("3");
+    expect(document.querySelector(".shipping-price").innerText).toContain(
+      `$${formatCurrency(calculateTotalShipping())}`,
+    );
+    expect(document.querySelector(".total-before-tax-price").innerText).toContain(
+      `$${formatCurrency(calculateTotalPrice() + calculateTotalShipping())}`,
+    );
   });
 });

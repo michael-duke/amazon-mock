@@ -82,11 +82,11 @@ function renderOrderSummary() {
     deliveryOptions.forEach((option) => {
       const isChecked = item.deliveryOptionId === option.id;
       deliveryOptionsHTML += `
-         <div class="delivery-option" data-product-id="${item.productId}"
+         <div class="delivery-option delivery-option-${item.productId}-${option.id}" data-product-id="${item.productId}"
               data-delivery-option-id="${option.id}">
               <input
               type="radio"
-              class="delivery-option-input"
+              class="delivery-option-input delivery-option-input-${item.productId}-${option.id}"
               name="delivery-option-${item.productId}"
               ${isChecked ? "checked" : ""}
               />

@@ -21,12 +21,12 @@ function renderPaymentSummary() {
 
           <div class="payment-summary-row">
             <div>Shipping &amp; handling:</div>
-            <div class="payment-summary-money">$${formatCurrency(calculateTotalShipping())}</div>
+            <div class="payment-summary-money shipping-price">$${formatCurrency(calculateTotalShipping())}</div>
           </div>
 
           <div class="payment-summary-row subtotal-row">
             <div>Total before tax:</div>
-            <div class="payment-summary-money">$${formatCurrency(totalBeforeTaxCents)}</div>
+            <div class="payment-summary-money total-before-tax-price">$${formatCurrency(totalBeforeTaxCents)}</div>
           </div>
 
           <div class="payment-summary-row">

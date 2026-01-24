@@ -6,6 +6,7 @@ import {
   calculateTotalPrice,
   calculateTotalShipping,
   removeFromCart,
+  updateDeliveryOption,
 } from "../../data/cart.js";
 
 describe("Automated tests for Cart", () => {
@@ -229,6 +230,54 @@ describe("Automated tests for Cart", () => {
           totalPrice: calculateTotalPrice(),
         }),
       );
+    });
+  });
+
+  describe("Test Suite: Update Delivery Option", () => {
+    beforeEach(() => {
+      spyOn(localStorage, "setItem");
+      Object.assign(cart, mockCart);
+      spyOn(localStorage, "getItem").and.callFake(() =>
+        JSON.stringify({
+          items: [
+            {
+              productId: "83d4ca15-0f35-48f5-b7a3-1ea210004f2e",
+              quantity: 3,
+              deliveryOptionId: "2",
+            },
+          ],
+        }),
+      );
+    });
+    it("Updates the delivery option of an existing item", () => {
+      loadFromStorage();
+      updateDeliveryOption("83d4ca15-0f35-48f5-b7a3-1ea210004f2e", "1");
+
+      expect(cart.items[0].deliveryOptionId).toEqual("1");
+      expect(localStorage.setItem).toHaveBeenCalledTimes(1);
+      expect(localStorage.setItem).toHaveBeenCalledWith(
+        "cart",
+        JSON.stringify({
+          items: [
+            {
+              productId: "83d4ca15-0f35-48f5-b7a3-1ea210004f2e",
+              quantity: 3,
+              deliveryOptionId: "1",
+            },
+          ],
+          totalQuantity: 0,
+          totalPrice: 0,
+        }),
+      );
+    });
+
+    it("Updates the delivery option of an item that is not in the cart", () => {
+      
+      loadFromStorage();
+      updateDeliveryOption("15b6fc6f-327a-4ec4-896f-486349e85a3d", "1");
+
+      expect(cart.items[0].deliveryOptionId).toEqual("2");
+      expect(localStorage.setItem).toHaveBeenCalledTimes(0);
     });
   });
 });
