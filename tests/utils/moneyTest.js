@@ -7,6 +7,9 @@ describe("Test Suite: Format Currency", () => {
   it("Works with zero", () => {
     expect(formatCurrency(0)).toEqual("0.00");
   });
+  it("Works with negative numbers", ()=>{
+    expect(formatCurrency(-5201)).toEqual("-52.01")
+  })
   describe("Rounding", () => {
     it("Rounds up to the nearest cent", () => {
       expect(formatCurrency(2000.5)).toEqual("20.01");

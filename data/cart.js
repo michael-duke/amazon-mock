@@ -46,6 +46,7 @@ export function addToCart(productId, selectedQuantity = 1) {
     });
 
   calculateTotalQuantity();
+  calculateTotalPrice();
   saveToStorage();
 }
 
