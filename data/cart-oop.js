@@ -51,7 +51,7 @@ function Cart(localStorageKey) {
       this.saveToStorage();
     },
     calculateTotalQuantity() {
-      this.totalQuantity = cart.items.reduce(
+      this.totalQuantity = this.items.reduce(
         (total, cartItem) => total + cartItem.quantity,
         0,
       );
@@ -76,7 +76,7 @@ function Cart(localStorageKey) {
       );
     },
     updateQuantity(productId, newQuantity) {
-      const matchingItem = cart.items.find((i) => i.productId === productId);
+      const matchingItem = this.items.find((i) => i.productId === productId);
       matchingItem.quantity = newQuantity;
       this.calculateTotalQuantity();
       this.calculateTotalPrice();
