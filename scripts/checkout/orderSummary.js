@@ -13,8 +13,6 @@ import formatDeliveryDate from "../utils/date.js";
 import renderPaymentSummary from "./paymentSummary.js";
 import renderCheckoutHeader from "./checkoutHeader.js";
 
-console.log(cart);
-
 function renderOrderSummary() {
   const orderSummary = document.querySelector(".order-summary");
 
@@ -47,7 +45,9 @@ function renderOrderSummary() {
           <div class="product-name product-name-${item.productId}">
               ${cartItem.name}
           </div>
-          <div class="product-price product-price-${item.productId}">$${formatCurrency(cartItem.priceCents)}</div>
+          <div class="product-price product-price-${item.productId}">
+           ${cartItem.getPrice()}
+          </div>
           <div class="product-quantity product-quantity-${item.productId}">
               <span> Quantity: <span class="quantity-label">${item.quantity}</span> </span>
               <span class="update-quantity-link link-primary" data-product-id="${item.productId}">

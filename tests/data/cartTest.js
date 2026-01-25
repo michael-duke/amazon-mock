@@ -99,7 +99,6 @@ describe("Automated tests for Cart", () => {
       Object.assign(cart, mockCart);
     });
     it("Calculates the total quantity/items", () => {
-      console.log(cart);
       spyOn(localStorage, "getItem").and.callFake(() => {
         return JSON.stringify({
           items: [
