@@ -2,15 +2,17 @@ import deliveryOptions, { getDeliveryOption } from "./deliveryOptions.js";
 import { getProduct } from "./products.js";
 
 class Cart {
+  #localStorageKey;
+
   constructor(localStorageKey) {
-    this.localStorageKey = localStorageKey;
+    this.#localStorageKey = localStorageKey;
     this.items = undefined;
     this.totalQuantity = 0;
     this.totalPrice = 0;
-    this.loadFromStorage();
+    this.#loadFromStorage();
   }
-  loadFromStorage() {
-    const storedData = JSON.parse(localStorage.getItem(this.localStorageKey));
+  #loadFromStorage() {
+    const storedData = JSON.parse(localStorage.getItem(this.#localStorageKey));
 
     if (storedData) {
       this.items = storedData;
@@ -103,12 +105,12 @@ class Cart {
     this.saveToStorage();
   }
   saveToStorage() {
-    localStorage.setItem(this.localStorageKey, JSON.stringify(this.items));
+    localStorage.setItem(this.#localStorageKey, JSON.stringify(this.items));
   }
 }
 
-const cart = new Cart('cart-oop');
-const businessCart = new Cart('cart-business');
+const cart = new Cart("cart-oop");
+const businessCart = new Cart("cart-business");
 
 businessCart.addToCart("83d4ca15-0f35-48f5-b7a3-1ea210004f2e");
 
