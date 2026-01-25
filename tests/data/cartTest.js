@@ -271,10 +271,17 @@ describe("Automated tests for Cart", () => {
       );
     });
 
-    it("Updates the delivery option of an item that is not in the cart", () => {
-      
+    it("Does not update the delivery option of an item that is not in the cart", () => {
       loadFromStorage();
       updateDeliveryOption("15b6fc6f-327a-4ec4-896f-486349e85a3d", "1");
+
+      expect(cart.items[0].deliveryOptionId).toEqual("2");
+      expect(localStorage.setItem).toHaveBeenCalledTimes(0);
+    });
+
+    it("Does not update the delivery option if the optionId is invalid", () => {
+      loadFromStorage();
+      updateDeliveryOption("83d4ca15-0f35-48f5-b7a3-1ea210004f2e", "99");
 
       expect(cart.items[0].deliveryOptionId).toEqual("2");
       expect(localStorage.setItem).toHaveBeenCalledTimes(0);

@@ -1,4 +1,4 @@
-import { getDeliveryOption } from "./deliveryOptions.js";
+import deliveryOptions, { getDeliveryOption } from "./deliveryOptions.js";
 import { getProduct } from "./products.js";
 
 export const cart = {
@@ -93,12 +93,17 @@ export function removeFromCart(productId) {
 }
 
 export function updateDeliveryOption(productId, newDeliveryOptionId) {
+  const validOption = deliveryOptions.find(
+    (option) => option.id === newDeliveryOptionId,
+  );
+  if (!validOption) return;
+
   const cartItem = cart.items.find((item) => item.productId === productId);
 
-  if (cartItem) {
-    cartItem.deliveryOptionId = newDeliveryOptionId;
-    saveToStorage();
-  }
+  if (!cartItem) return;
+
+  cartItem.deliveryOptionId = newDeliveryOptionId;
+  saveToStorage();
 }
 
 export function saveToStorage() {
