@@ -1,6 +1,6 @@
 import formatCurrency from "../scripts/utils/money.js";
 
-class Product {
+export class Product {
   id;
   image;
   name;
@@ -15,7 +15,7 @@ class Product {
     this.priceCents = productDetails.priceCents;
     this.keywords = productDetails.keywords;
   }
-  getStarsUrl() {
+  getStarsURL() {
     return `images/ratings/rating-${this.rating.stars * 10}.png`;
   }
   getPrice() {
@@ -30,7 +30,7 @@ export function getProduct(productId) {
   return products.find((product) => product.id === productId);
 }
 
-class Clothing extends Product {
+export class Clothing extends Product {
   sizeChartLink;
   type;
   constructor(productDetails) {
@@ -44,7 +44,7 @@ class Clothing extends Product {
   }
 }
 
-class Appliance extends Product {
+export class Appliance extends Product {
   warrantyLink;
   instructionsLink;
   constructor(productDetails) {
@@ -546,7 +546,7 @@ const products = [
   },
 ].map((productDetails) => {
   if (productDetails.type === "appliance") return new Appliance(productDetails);
-  if (productDetails.type !== "clothing") return new Clothing(productDetails);
+  if (productDetails.type === "clothing") return new Clothing(productDetails);
   return new Product(productDetails);
 });
 
