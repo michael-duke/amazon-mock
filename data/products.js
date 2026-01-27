@@ -44,6 +44,23 @@ class Clothing extends Product {
   }
 }
 
+class Appliance extends Product {
+  warrantyLink;
+  instructionsLink;
+  constructor(productDetails) {
+    super(productDetails);
+    this.warrantyLink = productDetails.warrantyLink;
+    this.instructionsLink = productDetails.instructionsLink;
+  }
+
+  renderExtraInfo() {
+    return `
+     <a href="${this.instructionsLink}" target="_blank">Instructions</a>
+     <a href="${this.warrantyLink}" target="_blank">Warranty</a>
+     `;
+  }
+}
+
 const products = [
   {
     id: "e43638ce-6aa0-4b85-b27f-e1d07eb678c6",
@@ -88,6 +105,9 @@ const products = [
       stars: 5,
       count: 2197,
     },
+    type: "appliance",
+    warrantyLink: "images/appliance-warranty.png",
+    instructionsLink: "images/appliance-instructions.png",
     priceCents: 1899,
     keywords: ["toaster", "kitchen", "appliances"],
   },
@@ -222,6 +242,9 @@ const products = [
       stars: 5,
       count: 846,
     },
+    type: "appliance",
+    warrantyLink: "images/appliance-warranty.png",
+    instructionLink: "images/appliance-instructions.png",
     priceCents: 3074,
     keywords: ["water boiler", "appliances", "kitchen"],
   },
@@ -435,6 +458,9 @@ const products = [
       stars: 4.5,
       count: 1211,
     },
+    type: "appliance",
+    warrantyLink: "images/appliance-warranty.png",
+    instructionLink: "images/appliance-instructions.png",
     priceCents: 2250,
     keywords: ["coffeemakers", "kitchen", "appliances"],
   },
@@ -480,6 +506,9 @@ const products = [
       count: 3,
     },
     priceCents: 10747,
+    type: "appliance",
+    warrantyLink: "images/appliance-warranty.png",
+    instructionLink: "images/appliance-instructions.png",
     keywords: ["food blenders", "kitchen", "appliances"],
   },
   {
@@ -515,10 +544,10 @@ const products = [
     priceCents: 2400,
     keywords: ["sweaters", "hoodies", "apparel", "mens"],
   },
-].map((productDetails) =>
-  productDetails.type !== "clothing"
-    ? new Product(productDetails)
-    : new Clothing(productDetails),
-);
+].map((productDetails) => {
+  if (productDetails.type === "appliance") return new Appliance(productDetails);
+  if (productDetails.type !== "clothing") return new Clothing(productDetails);
+  return new Product(productDetails);
+});
 
 export default products;
