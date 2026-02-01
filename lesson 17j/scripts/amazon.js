@@ -1,10 +1,9 @@
 import products from "../data/products.js";
-import { addToCart, calculateTotalQuantity } from "../data/cart.js";
+import { cart } from "../data/cart-class.js";
 import formatCurrency from "./utils/money.js";
 import formatDeliveryDate from "./utils/date.js";
 
 updateCartQuantity();
-
 products.forEach((product) => {
   const productContainer = document.createElement("div");
   productContainer.classList.add("product-container");
@@ -65,10 +64,10 @@ products.forEach((product) => {
 
 function updateCartQuantity() {
   // Calculate the Cart quantity
-  const total = calculateTotalQuantity();
+  const total = cart.totalQuantity;
 
   // Update cart quantiy notification
-  document.querySelector(".cart-quantity").innerHTML = total;
+  document.querySelector(".cart-quantity").innerHTML = total || '';
 }
 
 document.querySelectorAll(".add-to-cart-button").forEach((button) => {
@@ -79,7 +78,7 @@ document.querySelectorAll(".add-to-cart-button").forEach((button) => {
     ).value;
 
     // Add to cart object
-    addToCart(productId, selectedQuantity);
+    cart.addToCart(productId, selectedQuantity);
 
     // Recalculate the cart total
     updateCartQuantity();

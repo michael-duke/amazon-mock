@@ -3,7 +3,6 @@ import { getProduct } from "./products.js";
 
 class Cart {
   #localStorageKey;
-
   constructor(localStorageKey) {
     this.#localStorageKey = localStorageKey;
     this.items = undefined;
@@ -15,7 +14,7 @@ class Cart {
     const storedData = JSON.parse(localStorage.getItem(this.#localStorageKey));
 
     if (storedData) {
-      this.items = storedData;
+      this.items = storedData.items;
       this.calculateTotalQuantity();
       this.calculateTotalPrice();
     } else {
@@ -37,7 +36,6 @@ class Cart {
   }
   addToCart(productId, selectedQuantity = 1) {
     let matchingItem;
-
     this.items.forEach((cartItem) => {
       if (cartItem.productId === productId) matchingItem = cartItem;
     });
@@ -105,14 +103,11 @@ class Cart {
     this.saveToStorage();
   }
   saveToStorage() {
-    localStorage.setItem(this.#localStorageKey, JSON.stringify(this.items));
+    localStorage.setItem(this.#localStorageKey, JSON.stringify(this));
   }
 }
 
-const cart = new Cart("cart-oop");
+export const cart = new Cart("cart-oop");
 const businessCart = new Cart("cart-business");
 
-businessCart.addToCart("83d4ca15-0f35-48f5-b7a3-1ea210004f2e");
-
 console.log(cart);
-console.log(businessCart);

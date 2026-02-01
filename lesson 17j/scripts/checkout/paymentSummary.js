@@ -1,12 +1,8 @@
-import {
-  cart,
-  calculateTotalPrice,
-  calculateTotalShipping,
-} from "../../data/cart.js";
+import {cart} from "../../data/cart-class.js";
 import formatCurrency, { formatTaxCent } from "../utils/money.js";
 
 function renderPaymentSummary() {
-  const totalBeforeTaxCents = calculateTotalPrice() + calculateTotalShipping();
+  const totalBeforeTaxCents = cart.calculateTotalPrice() + cart.calculateTotalShipping();
   const taxCents = formatTaxCent(totalBeforeTaxCents);
   const orderTotal = totalBeforeTaxCents + taxCents;
 
@@ -15,13 +11,13 @@ function renderPaymentSummary() {
   paymentSummary.innerHTML = `
       <div class="payment-summary-title">Order Summary</div>
           <div class="payment-summary-row">
-            <div>Items (${cart.total}):</div>
-            <div class="payment-summary-money">$${formatCurrency(calculateTotalPrice())}</div>
+            <div>Items (${cart.totalQuantity}):</div>
+            <div class="payment-summary-money">$${formatCurrency(cart.calculateTotalPrice())}</div>
           </div>
 
           <div class="payment-summary-row">
             <div>Shipping &amp; handling:</div>
-            <div class="payment-summary-money shipping-price">$${formatCurrency(calculateTotalShipping())}</div>
+            <div class="payment-summary-money shipping-price">$${formatCurrency(cart.calculateTotalShipping())}</div>
           </div>
 
           <div class="payment-summary-row subtotal-row">

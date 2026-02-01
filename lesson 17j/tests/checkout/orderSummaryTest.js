@@ -1,10 +1,5 @@
 import renderOrderSummary from "../../scripts/checkout/orderSummary.js";
-import {
-  cart,
-  loadFromStorage,
-  calculateTotalPrice,
-  calculateTotalShipping,
-} from "../../data/cart.js";
+import { cart } from "../../data/cart-class.js";
 import { getProduct } from "../../data/products.js";
 import formatCurrency from "../../scripts/utils/money.js";
 
@@ -19,26 +14,22 @@ describe("Test Suite: Render order summaray", () => {
      <div class="order-summary"></div>
      <div class="payment-summary"></div>
     `;
-    spyOn(localStorage, "getItem").and.callFake(() =>
-      JSON.stringify({
-        items: [
-          {
-            productId: productId1,
-            quantity: 3,
-            deliveryOptionId: "2",
-          },
-          {
-            productId: productId2,
-            quantity: 2,
-            deliveryOptionId: "1",
-          },
-        ],
-      }),
-    );
-    loadFromStorage();
+    cart.items = [
+      {
+        productId: productId1,
+        quantity: 3,
+        deliveryOptionId: "2",
+      },
+      {
+        productId: productId2,
+        quantity: 2,
+        deliveryOptionId: "1",
+      },
+    ];
+
     renderOrderSummary();
   });
-
+  console.log(cart);
   afterEach(() => {
     document.querySelector(".test-container").innerHTML = "";
   });
@@ -87,10 +78,12 @@ describe("Test Suite: Render order summaray", () => {
     expect(cart.items.length).toEqual(2);
     expect(cart.items[0].deliveryOptionId).toEqual("3");
     expect(document.querySelector(".shipping-price").innerText).toContain(
-      `$${formatCurrency(calculateTotalShipping())}`,
+      `$${formatCurrency(cart.calculateTotalShipping())}`,
     );
-    expect(document.querySelector(".total-before-tax-price").innerText).toContain(
-      `$${formatCurrency(calculateTotalPrice() + calculateTotalShipping())}`,
+    expect(
+      document.querySelector(".total-before-tax-price").innerText,
+    ).toContain(
+      `$${formatCurrency(cart.calculateTotalPrice() + cart.calculateTotalShipping())}`,
     );
   });
 });

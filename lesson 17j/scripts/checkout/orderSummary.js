@@ -1,9 +1,4 @@
-import {
-  cart,
-  removeFromCart,
-  updateQuantity,
-  updateDeliveryOption,
-} from "../../data/cart.js";
+import {cart} from "../../data/cart-class.js";
 import deliveryOptions, {
   getDeliveryOption,
 } from "../../data/deliveryOptions.js";
@@ -106,7 +101,7 @@ function renderOrderSummary() {
       const { productId } = link.dataset;
 
       // Filter the cart object
-      removeFromCart(productId);
+      cart.removeFromCart(productId);
 
       // Repaint the Chekout header
       renderCheckoutHeader();
@@ -143,7 +138,7 @@ function renderOrderSummary() {
         `.quantity-input-${productId}`,
       ).value;
 
-      updateQuantity(productId, newQuantity);
+      cart.updateQuantity(productId, newQuantity);
 
       // Update the cartQuantity.
       renderCheckoutHeader();
@@ -160,7 +155,7 @@ function renderOrderSummary() {
     const { productId, deliveryOptionId } = option.dataset;
 
     option.addEventListener("click", () => {
-      updateDeliveryOption(productId, deliveryOptionId);
+      cart.updateDeliveryOption(productId, deliveryOptionId);
       renderOrderSummary();
       renderPaymentSummary();
     });

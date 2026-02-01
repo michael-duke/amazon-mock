@@ -1,7 +1,7 @@
-import { calculateTotalQuantity } from "../../data/cart.js";
+import {cart} from "../../data/cart-class.js";
 
 function renderCheckoutHeader() {
-  const total = calculateTotalQuantity();
+  const total = cart.calculateTotalQuantity();
   const checkoutHeader = document.querySelector(".checkout-header");
   checkoutHeader.innerHTML = `
    <div class="checkout-header">
