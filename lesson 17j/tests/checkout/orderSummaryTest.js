@@ -29,7 +29,6 @@ describe("Test Suite: Render order summaray", () => {
 
     renderOrderSummary();
   });
-  console.log(cart);
   afterEach(() => {
     document.querySelector(".test-container").innerHTML = "";
   });
