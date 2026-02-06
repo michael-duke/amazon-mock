@@ -553,6 +553,25 @@ const products = [
 */
 export let products = [];
 
+export function loadProductsFetch() {
+  return fetch("https://supersimplebackend.dev/products")
+    .then((response) => {
+      return response.json();
+    })
+    .then((productsData) => {
+      products = productsData.map((productDetails) => {
+        if (productDetails.keywords.includes("appliances"))
+          return new Appliance(productDetails);
+        if (productDetails.type === "clothing")
+          return new Clothing(productDetails);
+        return new Product(productDetails);
+      });
+      console.log("load products");
+    });
+}
+
+// loadProductsFetch().then(() => console.log("next step"));
+
 export function loadProducts(callback) {
   const xhr = new XMLHttpRequest();
 
@@ -564,7 +583,7 @@ export function loadProducts(callback) {
         return new Clothing(productDetails);
       return new Product(productDetails);
     });
-    console.log('load products')
+    console.log("load products");
     callback();
   });
   xhr.open("GET", "https://supersimplebackend.dev/products");

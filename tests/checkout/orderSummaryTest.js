@@ -5,7 +5,7 @@ import {
   calculateTotalPrice,
   calculateTotalShipping,
 } from "../../data/cart.js";
-import { getProduct, loadProducts } from "../../data/products.js";
+import { getProduct, loadProductsFetch } from "../../data/products.js";
 import formatCurrency from "../../scripts/utils/money.js";
 
 describe("Test Suite: Render order summaray", () => {
@@ -13,7 +13,7 @@ describe("Test Suite: Render order summaray", () => {
   const productId2 = "15b6fc6f-327a-4ec4-896f-486349e85a3d";
 
   beforeAll((done) => {
-    loadProducts(() => done());
+    loadProductsFetch().then(() => done());
   });
 
   beforeEach(() => {
