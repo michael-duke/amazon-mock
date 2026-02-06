@@ -8,18 +8,21 @@ import {
   removeFromCart,
   updateDeliveryOption,
 } from "../../data/cart.js";
+import { loadProducts } from "../../data/products.js";
 
 describe("Automated tests for Cart", () => {
-  const mockCart = {
-    items: [],
-    totalQuantity: 0,
-    totalPrice: 0,
-  };
-  describe("Test Suite: Add to Cart", () => {
-    beforeEach(() => {
-      spyOn(localStorage, "setItem");
-      Object.assign(cart, mockCart);
+  beforeAll((done) => {
+    loadProducts(() => done());
+  });
+  beforeEach(() => {
+    spyOn(localStorage, "setItem");
+    Object.assign(cart, {
+      items: [],
+      totalQuantity: 0,
+      totalPrice: 0,
     });
+  });
+  describe("Test Suite: Add to Cart", () => {
     it("Adds an existing product to the Cart", () => {
       spyOn(localStorage, "getItem").and.callFake(() => {
         return JSON.stringify({
@@ -94,10 +97,6 @@ describe("Automated tests for Cart", () => {
   });
 
   describe("Test Suite: Calculates the totals", () => {
-    beforeEach(() => {
-      spyOn(localStorage, "setItem");
-      Object.assign(cart, mockCart);
-    });
     it("Calculates the total quantity/items", () => {
       spyOn(localStorage, "getItem").and.callFake(() => {
         return JSON.stringify({
@@ -160,10 +159,6 @@ describe("Automated tests for Cart", () => {
   });
 
   describe("Test Suite: Remove from Cart", () => {
-    beforeEach(() => {
-      spyOn(localStorage, "setItem");
-      Object.assign(cart, mockCart);
-    });
     it("Removes item that is in the cart", () => {
       spyOn(localStorage, "getItem").and.callFake(() =>
         JSON.stringify({
@@ -234,8 +229,6 @@ describe("Automated tests for Cart", () => {
 
   describe("Test Suite: Update Delivery Option", () => {
     beforeEach(() => {
-      spyOn(localStorage, "setItem");
-      Object.assign(cart, mockCart);
       spyOn(localStorage, "getItem").and.callFake(() =>
         JSON.stringify({
           items: [
