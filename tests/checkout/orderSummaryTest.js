@@ -5,12 +5,18 @@ import {
   calculateTotalPrice,
   calculateTotalShipping,
 } from "../../data/cart.js";
-import { getProduct } from "../../data/products.js";
+import { getProduct, loadProducts } from "../../data/products.js";
 import formatCurrency from "../../scripts/utils/money.js";
 
 describe("Test Suite: Render order summaray", () => {
   const productId1 = "83d4ca15-0f35-48f5-b7a3-1ea210004f2e";
   const productId2 = "15b6fc6f-327a-4ec4-896f-486349e85a3d";
+
+  beforeAll((done)=>{
+    loadProducts(()=>{
+      done()
+    })
+  })
 
   beforeEach(() => {
     spyOn(localStorage, "setItem");
