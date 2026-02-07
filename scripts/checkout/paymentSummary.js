@@ -3,6 +3,7 @@ import {
   calculateTotalPrice,
   calculateTotalShipping,
 } from "../../data/cart.js";
+import { addOrder } from "../../data/orders.js";
 import formatCurrency, { formatTaxCent } from "../utils/money.js";
 
 function renderPaymentSummary() {
@@ -15,7 +16,7 @@ function renderPaymentSummary() {
   paymentSummary.innerHTML = `
       <div class="payment-summary-title">Order Summary</div>
           <div class="payment-summary-row">
-            <div>Items (${cart.total}):</div>
+            <div>Items (${cart.totalQuantity}):</div>
             <div class="payment-summary-money">$${formatCurrency(calculateTotalPrice())}</div>
           </div>
 
@@ -46,15 +47,24 @@ function renderPaymentSummary() {
   document
     .querySelector(".place-order-button")
     .addEventListener("click", async () => {
-      const response = await fetch("https://supersimplebackend.dev/orders", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(cart),
-      });
-      const order = await response.json();
-      console.log(order);
+      try {
+        const response = await fetch("https://supersimplebackend.dev/orders", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ cart: cart.items }),
+        });
+
+        if (!response.ok) throw new Error("Order failed. Please try again");
+        const order = await response.json();
+        addOrder(order);
+        // Empty the cart after placing order
+        cart.items = []
+        window.location.href = "orders.html";
+      } catch (error) {
+        console.log("Error placing order: " + error);
+      }
     });
 }
 
