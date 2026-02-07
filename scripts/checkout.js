@@ -6,12 +6,18 @@ import { loadCartFetch } from "../data/cart.js";
 
 /*Async Await Version*/
 async function loadPage() {
-  await loadProductsFetch();
-  await loadCartFetch();
-
+  try {
+    
+    await loadProductsFetch();
+    await loadCartFetch();
+  }
+  catch(error) {
+    console.log("Unexpected error. Please try again later.", error);
+  }
   renderCheckoutHeader();
   renderOrderSummary();
   renderPaymentSummary();
+
 }
 
 loadPage();
