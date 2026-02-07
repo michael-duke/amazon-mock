@@ -5,7 +5,7 @@ function Cart(localStorageKey) {
   const cart = {
     items: undefined,
     totalQuantity: 0,
-    totalPrice: 0,
+    totalPriceCents: 0,
     localStorageKey,
     loadFromStorage() {
       const storedData = JSON.parse(localStorage.getItem(localStorageKey));
@@ -59,13 +59,13 @@ function Cart(localStorageKey) {
       return this.totalQuantity;
     },
     calculateTotalPrice() {
-      this.totalPrice = this.items.reduce(
+      this.totalPriceCents = this.items.reduce(
         (total, cartItem) =>
           total + getProduct(cartItem.productId).priceCents * cartItem.quantity,
         0,
       );
 
-      return this.totalPrice;
+      return this.totalPriceCents;
     },
     calculateTotalShipping() {
       return this.items.reduce(

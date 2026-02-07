@@ -43,6 +43,19 @@ function renderPaymentSummary() {
             Place your order
           </button>
   `;
+  document
+    .querySelector(".place-order-button")
+    .addEventListener("click", async () => {
+      const response = await fetch("https://supersimplebackend.dev/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(cart),
+      });
+      const order = await response.json();
+      console.log(order);
+    });
 }
 
 export default renderPaymentSummary;

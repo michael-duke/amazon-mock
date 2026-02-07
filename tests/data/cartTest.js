@@ -19,7 +19,7 @@ describe("Automated tests for Cart", () => {
     Object.assign(cart, {
       items: [],
       totalQuantity: 0,
-      totalPrice: 0,
+      totalPriceCents: 0,
     });
   });
   describe("Test Suite: Add to Cart", () => {
@@ -52,9 +52,9 @@ describe("Automated tests for Cart", () => {
             },
           ],
           // Since when adding the keys totalQuantity
-          // and totalPrice are changed we add them here
+          // and totalPriceCents are changed we add them here
           totalQuantity: calculateTotalQuantity(),
-          totalPrice: calculateTotalPrice(),
+          totalPriceCents: calculateTotalPrice(),
         }),
       );
       expect(cart.items[0].productId).toEqual(
@@ -84,9 +84,9 @@ describe("Automated tests for Cart", () => {
             },
           ],
           // Since when adding the keys totalQuantity
-          // and totalPrice are changed we add them here
+          // and totalPriceCents are changed we add them here
           totalQuantity: calculateTotalQuantity(),
-          totalPrice: calculateTotalPrice(),
+          totalPriceCents: calculateTotalPrice(),
         }),
       );
       expect(cart.items[0].productId).toEqual(
@@ -180,7 +180,7 @@ describe("Automated tests for Cart", () => {
         JSON.stringify({
           items: [],
           totalQuantity: 0,
-          totalPrice: 0,
+          totalPriceCents: 0,
         }),
       );
     });
@@ -221,7 +221,7 @@ describe("Automated tests for Cart", () => {
             },
           ],
           totalQuantity: calculateTotalQuantity(),
-          totalPrice: calculateTotalPrice(),
+          totalPriceCents: calculateTotalPrice(),
         }),
       );
     });
@@ -258,7 +258,7 @@ describe("Automated tests for Cart", () => {
             },
           ],
           totalQuantity: 0,
-          totalPrice: 0,
+          totalPriceCents: 0,
         }),
       );
     });

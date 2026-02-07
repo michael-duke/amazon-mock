@@ -7,7 +7,7 @@ class Cart {
     this.#localStorageKey = localStorageKey;
     this.items = undefined;
     this.totalQuantity = 0;
-    this.totalPrice = 0;
+    this.totalPriceCents = 0;
     this.#loadFromStorage();
   }
   #loadFromStorage() {
@@ -61,13 +61,13 @@ class Cart {
     return this.totalQuantity;
   }
   calculateTotalPrice() {
-    this.totalPrice = this.items.reduce(
+    this.totalPriceCents = this.items.reduce(
       (total, cartItem) =>
         total + getProduct(cartItem.productId).priceCents * cartItem.quantity,
       0,
     );
 
-    return this.totalPrice;
+    return this.totalPriceCents;
   }
   calculateTotalShipping() {
     return this.items.reduce(

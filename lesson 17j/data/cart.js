@@ -4,7 +4,7 @@ import { getProduct } from "./products.js";
 export const cart = {
   items: [],
   totalQuantity: 0,
-  totalPrice: 0,
+  totalPriceCents: 0,
 };
 
 loadFromStorage();
@@ -26,7 +26,7 @@ export function loadFromStorage() {
       },
     ];
     cart.totalQuantity = calculateTotalQuantity();
-    cart.totalPrice = calculateTotalPrice();
+    cart.totalPriceCents = calculateTotalPrice();
   }
 }
 
@@ -60,13 +60,13 @@ export function calculateTotalQuantity() {
 }
 
 export function calculateTotalPrice() {
-  cart.totalPrice = cart.items.reduce(
+  cart.totalPriceCents = cart.items.reduce(
     (total, cartItem) =>
       total + getProduct(cartItem.productId).priceCents * cartItem.quantity,
     0,
   );
 
-  return cart.totalPrice;
+  return cart.totalPriceCents;
 }
 
 export function calculateTotalShipping() {
