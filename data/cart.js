@@ -110,6 +110,12 @@ export function saveToStorage() {
   localStorage.setItem("cart", JSON.stringify(cart));
 }
 
+export function loadCartFetch() {
+  return fetch("https://supersimplebackend.dev/cart")
+    .then((response) => response.text())
+    .then((cartData) => console.log(cartData));
+}
+
 export function loadCart(callback) {
   const xhr = new XMLHttpRequest();
 
