@@ -27,6 +27,7 @@ export function loadFromStorage() {
     ];
     cart.totalQuantity = calculateTotalQuantity();
     cart.totalPriceCents = calculateTotalPrice();
+    console.log(cart)
   }
 }
 
@@ -55,7 +56,7 @@ export function calculateTotalQuantity() {
     (total, cartItem) => total + cartItem.quantity,
     0,
   );
-
+  console.log()
   return cart.totalQuantity;
 }
 
@@ -125,4 +126,13 @@ export function loadCart(callback) {
   });
   xhr.open("GET", "https://supersimplebackend.dev/cart");
   xhr.send();
+}
+
+export function clearCart() {
+  Object.assign(cart, {
+    items: [],
+    totalQuantity: 0,
+    totalPriceCents: 0,
+  });
+  saveToStorage();
 }

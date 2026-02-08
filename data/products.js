@@ -1,5 +1,6 @@
 import formatCurrency from "../scripts/utils/money.js";
 
+export let products = [];
 export class Product {
   id;
   image;
@@ -551,7 +552,6 @@ const products = [
 });
 
 */
-export let products = [];
 
 export function loadProductsFetch() {
   return fetch("https://supersimplebackend.dev/products")
