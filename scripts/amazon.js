@@ -22,12 +22,12 @@ async function loadPage() {
 
 loadPage();
 
-function updateCartQuantity() {
+export function updateCartQuantity() {
   // Calculate the Cart quantity
   const total = calculateTotalQuantity();
 
   // Update cart quantiy notification
-  document.querySelector(".cart-quantity").innerHTML = total;
+  document.querySelector(".cart-quantity").innerHTML = total || '';
 }
 
 function renderProductsGrid() {
