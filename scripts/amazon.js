@@ -1,11 +1,36 @@
-import { products, loadProducts } from "../data/products.js";
+import { products, loadProductsFetch } from "../data/products.js";
 import { addToCart, calculateTotalQuantity } from "../data/cart.js";
 
-loadProducts(renderProductsGrid);
+/*
+loadProducts(() => {
+  // Load the cart before rendering the products grid
+  renderProductsGrid();
+  loadFromStorage();
+  updateCartQuantity();
+});
+*/
+
+async function loadPage() {
+  try {
+    await loadProductsFetch();
+  } catch (error) {
+    console.log("Unexpected error. Please try again later.", error);
+  }
+  updateCartQuantity();
+  renderProductsGrid();
+}
+
+loadPage();
+
+function updateCartQuantity() {
+  // Calculate the Cart quantity
+  const total = calculateTotalQuantity();
+
+  // Update cart quantiy notification
+  document.querySelector(".cart-quantity").innerHTML = total;
+}
 
 function renderProductsGrid() {
-  updateCartQuantity();
-
   products.forEach((product) => {
     const productContainer = document.createElement("div");
     productContainer.classList.add("product-container");
@@ -63,14 +88,6 @@ function renderProductsGrid() {
 
     document.querySelector(".products-grid").appendChild(productContainer);
   });
-
-  function updateCartQuantity() {
-    // Calculate the Cart quantity
-    const total = calculateTotalQuantity();
-
-    // Update cart quantiy notification
-    document.querySelector(".cart-quantity").innerHTML = total;
-  }
 
   document.querySelectorAll(".add-to-cart-button").forEach((button) => {
     button.addEventListener("click", () => {

@@ -53,7 +53,7 @@ function renderOrderSummary() {
               <span class="update-quantity-link link-primary" data-product-id="${item.productId}">
               Update
               </span>
-              <input type="number" class="quantity-input quantity-input-${item.productId}">
+              <input type="number" min="1" class="quantity-input quantity-input-${item.productId}">
               <span class="save-quantity-link link-primary" data-product-id="${item.productId}">
               Save
               </span>

@@ -2,6 +2,7 @@ import {
   cart,
   calculateTotalPrice,
   calculateTotalShipping,
+  clearCart,
 } from "../../data/cart.js";
 import { addOrder } from "../../data/orders.js";
 import formatCurrency, { formatTaxCent } from "../utils/money.js";
@@ -60,7 +61,7 @@ function renderPaymentSummary() {
         const order = await response.json();
         addOrder(order);
         // Empty the cart after placing order
-        cart.items = []
+        clearCart()
         window.location.href = "orders.html";
       } catch (error) {
         console.log("Error placing order: " + error);
