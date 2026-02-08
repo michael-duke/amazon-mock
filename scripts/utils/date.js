@@ -1,5 +1,13 @@
 import dayjs from "https://unpkg.com/dayjs@1.11.19/esm/index.js";
 
+export function formatOrderDate(date) {
+  return dayjs(date).format("MMMM D");
+}
+
+export function formatDeliveryDate(date) {
+  return dayjs(date).format("dddd, MMMM D");
+}
+
 function formatBusinessDate(deliveryDays) {
   let date = dayjs();
   let daysCounted = 0;
