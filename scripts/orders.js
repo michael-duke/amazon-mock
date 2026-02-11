@@ -1,7 +1,7 @@
 import { addToCart } from "../data/cart.js";
 import { orders } from "../data/orders.js";
-import { getProduct, loadProductsFetch, products } from "../data/products.js";
-import { updateCartQuantity } from "./amazon.js";
+import { getProduct, loadProductsFetch } from "../data/products.js";
+import { updateCartQuantity } from "./utils/cart.js";
 import { formatOrderDate } from "./utils/date.js";
 import formatCurrency from "./utils/money.js";
 

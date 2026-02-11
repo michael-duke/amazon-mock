@@ -1,6 +1,6 @@
 import { getOrder } from "../data/orders.js";
 import { getProduct, loadProductsFetch } from "../data/products.js";
-import { updateCartQuantity } from "./amazon.js";
+import { updateCartQuantity } from "./utils/cart.js";
 import { formatDeliveryDate } from "./utils/date.js";
 
 async function loadPage() {
@@ -52,6 +52,4 @@ function renderOrderTracking() {
         <div class="progress-bar"></div>
       </div>
   `;
-
-  console.log(orderTracking);
 }
