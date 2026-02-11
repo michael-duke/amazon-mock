@@ -2,6 +2,7 @@ import { getOrder } from "../data/orders.js";
 import { getProduct, loadProductsFetch } from "../data/products.js";
 import { updateCartQuantity } from "./utils/cart.js";
 import { formatDeliveryDate } from "./utils/date.js";
+import { calculateDeliveryProgress } from "./utils/progress.js";
 
 async function loadPage() {
   try {
@@ -22,7 +23,10 @@ function renderOrderTracking() {
   const orderProduct = order.products.find(
     (p) => p.productId === productDetails.id,
   );
-
+  const progress = calculateDeliveryProgress(
+    order.orderTime,
+    orderProduct.estimatedDeliveryTime,
+  );
   const orderTracking = document.querySelector(".order-tracking");
   orderTracking.innerHTML = `
       <a class="back-to-orders-link link-primary" href="orders.html">
@@ -49,7 +53,7 @@ function renderOrderTracking() {
       </div>
 
       <div class="progress-bar-container">
-        <div class="progress-bar"></div>
+        <div style="width:${progress}%" class="progress-bar"></div>
       </div>
   `;
 }
