@@ -32,6 +32,16 @@ export function getProduct(productId) {
   return products.find((product) => product.id === productId);
 }
 
+export function getFilteredProducts(normalizedQuery) {
+  if (!normalizedQuery) return products;
+
+  return products.filter((product) => {
+    return (
+      product.name.toLowerCase().includes(normalizedQuery) ||
+      product.keywords.some((k) => k.toLowerCase().includes(normalizedQuery))
+    );
+  });
+}
 export class Clothing extends Product {
   sizeChartLink;
   type;
@@ -568,7 +578,8 @@ export function loadProductsFetch() {
         return new Product(productDetails);
       });
       console.log("load products");
-    }).catch((error)=>{
+    })
+    .catch((error) => {
       console.log("Unexpected error. Please try again later.");
     });
 }
