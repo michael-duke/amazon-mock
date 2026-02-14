@@ -1,6 +1,8 @@
 import { products, loadProductsFetch } from "../data/products.js";
 import { addToCart } from "../data/cart.js";
 import { updateCartQuantity } from "./utils/cart.js";
+import { attachSearchListeners, processSearch } from "./utils/search.js";
+
 /*
 loadProducts(() => {
   // Load the cart before rendering the products grid
@@ -13,8 +15,32 @@ loadProducts(() => {
 async function loadPage() {
   try {
     await loadProductsFetch();
+
+    // Setup Search
+    attachSearchListeners((query) => {
+      processSearch(query, products, renderProductsGrid);
+    });
+
+    // Update the Cart notification on load
     updateCartQuantity();
-    renderProductsGrid();
+
+    // Check URL on load for initial search
+    const url = new URL(window.location.href);
+    const initialSearch = url.searchParams.get("search");
+    if (initialSearch) {
+      // Use the same processSearch logic for the initial load
+      processSearch(initialSearch, products, renderProductsGrid);
+      const searchBar = document.querySelector(".search-bar");
+      searchBar.value = initialSearch;
+      // Put the cursor at the end of the text automatically
+      searchBar.focus();
+      searchBar.setSelectionRange(
+        searchBar.value.length,
+        searchBar.value.length,
+      );
+    } else {
+      renderProductsGrid(products);
+    }
   } catch (error) {
     console.log("Unexpected error. Please try again later.", error);
   }
@@ -22,7 +48,7 @@ async function loadPage() {
 
 loadPage();
 
-function renderProductsGrid() {
+function renderProductsGrid(products) {
   const productsGrid = document.querySelector(".products-grid");
   products.forEach((product) => {
     productsGrid.innerHTML += `
@@ -109,3 +135,54 @@ function renderProductsGrid() {
     });
   });
 }
+
+function handleSearch() {
+  const searchQuery = document.querySelector(".search-bar").value;
+  const normalizedQuery = searchQuery.trim().toLowerCase();
+
+  const productsGrid = document.querySelector(".products-grid");
+  // IF WE ARE NOT ON THE HOME PAGE (no products-grid)
+  if (!productsGrid) {
+    // Redirect to home page with the search query in the URL
+    window.location.href = `amazon.html?search=${encodeURIComponent(searchQuery)}`;
+    return;
+  }
+
+  // Sync URL with the Search (without refresh)
+  const newUrl = new URL(window.location);
+  if (normalizedQuery) {
+    newUrl.searchParams.set("search", normalizedQuery);
+  } else {
+    newUrl.searchParams.delete("search");
+  }
+  window.history.replaceState({}, "", newUrl);
+
+  // Filter the data and Render
+  const filteredProducts = products.filter((product) => {
+    return (
+      product.name.toLowerCase().includes(normalizedQuery) ||
+      product.keywords.some((k) => k.toLowerCase().includes(normalizedQuery))
+    );
+  });
+
+  productsGrid.innerHTML = "";
+  renderProductsGrid(filteredProducts);
+}
+
+// Attach the unified function to both listeners
+document
+  .querySelector(".search-button")
+  .addEventListener("click", handleSearch);
+
+document.querySelector(".search-bar").addEventListener("keydown", (event) => {
+  if (event.key === "Enter") handleSearch();
+});
+
+let searchTimeout;
+
+// Trigger search as the user types
+// THE DEBOUNCE: Triggered on every input, but delays the execution
+document.querySelector(".search-bar").addEventListener("input", () => {
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(() => handleSearch(), 300); // Wait 300ms after the last keystroke.
+});

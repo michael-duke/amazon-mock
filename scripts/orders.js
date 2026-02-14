@@ -4,12 +4,17 @@ import { getProduct, loadProductsFetch } from "../data/products.js";
 import { updateCartQuantity } from "./utils/cart.js";
 import { formatOrderDate } from "./utils/date.js";
 import formatCurrency from "./utils/money.js";
+import { attachSearchListeners, processSearch } from "./utils/search.js";
 
 async function loadPage() {
   try {
     await loadProductsFetch();
     renderOrdersGrid();
     updateCartQuantity();
+    attachSearchListeners((query) => {
+      // On the orders page, we always want to redirect to home
+      window.location.href = `amazon.html?search=${encodeURIComponent(query)}`;
+    });
   } catch (error) {
     console.log(error);
   }
@@ -19,7 +24,7 @@ loadPage();
 
 function renderOrdersGrid() {
   const ordersGrid = document.querySelector(".orders-grid");
-
+  ordersGrid.innerHTML = "";
   orders.forEach((order) => {
     ordersGrid.innerHTML += `
     <div class="order-container">

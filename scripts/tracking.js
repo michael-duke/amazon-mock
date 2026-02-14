@@ -3,12 +3,17 @@ import { getProduct, loadProductsFetch } from "../data/products.js";
 import { updateCartQuantity } from "./utils/cart.js";
 import { formatDeliveryDate } from "./utils/date.js";
 import { calculateDeliveryProgress } from "./utils/progress.js";
+import { attachSearchListeners } from "./utils/search.js";
 
 async function loadPage() {
   try {
     await loadProductsFetch();
     renderOrderTracking();
     updateCartQuantity();
+    attachSearchListeners((query) => {
+      // On the orders page, we always want to redirect to home
+      window.location.href = `amazon.html?search=${encodeURIComponent(query)}`;
+    });
   } catch (error) {
     console.log("Unexpected error. Please try again later.", error);
   }
