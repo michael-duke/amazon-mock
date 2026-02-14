@@ -27,7 +27,6 @@ export function loadFromStorage() {
     ];
     cart.totalQuantity = calculateTotalQuantity();
     cart.totalPriceCents = calculateTotalPrice();
-    console.log(cart)
   }
 }
 
@@ -56,16 +55,17 @@ export function calculateTotalQuantity() {
     (total, cartItem) => total + cartItem.quantity,
     0,
   );
-  console.log()
+  console.log();
   return cart.totalQuantity;
 }
 
 export function calculateTotalPrice() {
-  cart.totalPriceCents = cart.items.reduce(
-    (total, cartItem) =>
-      total + getProduct(cartItem.productId).priceCents * cartItem.quantity,
-    0,
-  );
+  cart.totalPriceCents = cart.items.reduce((total, cartItem) => {
+    const product = getProduct(cartItem.productId);
+    if (product) total += product.priceCents * cartItem.quantity;
+
+    return total;
+  }, 0);
 
   return cart.totalPriceCents;
 }
