@@ -4,14 +4,14 @@ import { getProduct, loadProductsFetch } from "../data/products.js";
 import { updateCartQuantity } from "./utils/cart.js";
 import { formatOrderDate } from "./utils/date.js";
 import formatCurrency from "./utils/money.js";
-import { attachSearchListeners, processSearch } from "./utils/search.js";
+import { setupSearch } from "./utils/search.js";
 
 async function loadPage() {
   try {
     await loadProductsFetch();
     renderOrdersGrid();
     updateCartQuantity();
-    attachSearchListeners((query) => {
+    setupSearch((query) => {
       // On the orders page, we always want to redirect to home
       window.location.href = `amazon.html?search=${encodeURIComponent(query)}`;
     });
