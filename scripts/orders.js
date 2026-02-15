@@ -24,9 +24,9 @@ loadPage();
 
 function renderOrdersGrid() {
   const ordersGrid = document.querySelector(".orders-grid");
-  ordersGrid.innerHTML = "";
+  let ordersHTML = "";
   orders.forEach((order) => {
-    ordersGrid.innerHTML += `
+    ordersHTML += `
     <div class="order-container">
       <div class="order-header">
         <div class="order-header-left-section">
@@ -49,14 +49,7 @@ function renderOrdersGrid() {
       ${renderOrderDetailsGrid(order)}
       `;
   });
-
-  document.querySelectorAll(".buy-again-button").forEach((button) => {
-    button.addEventListener("click", () => {
-      const { productId } = button.dataset;
-      addToCart(productId);
-      updateCartQuantity();
-    });
-  });
+  ordersGrid.innerHTML = ordersHTML;
 
   function renderOrderDetailsGrid(order) {
     let orderDetailsGrid = "";
@@ -79,7 +72,12 @@ function renderOrdersGrid() {
           <div class="product-quantity">
             Quantity: ${detail.quantity}
           </div>
-          <button class="buy-again-button button-primary" data-product-id="${detail.productId}">
+          <div class="added-to-cart added-to-cart-${order.id}-${detail.productId}">
+            <img src="images/icons/checkmark.png">
+            Added
+          </div>
+          <button class="buy-again-button button-primary" data-product-id="${detail.productId}"
+          data-order-id="${order.id}">
             <img class="buy-again-icon" src="images/icons/buy-again.png">
             <span class="buy-again-message">Buy it again</span>
           </button>
@@ -98,3 +96,36 @@ function renderOrdersGrid() {
     return orderDetailsGrid;
   }
 }
+
+const buyAgainTimeouts = {};
+
+document.querySelector(".orders-grid")?.addEventListener("click", (event) => {
+  const button = event.target.closest(".buy-again-button");
+  if (button) {
+    const { productId, orderId } = button.dataset;
+    const uniqueKey = `${orderId}-${productId}`;
+    addToCart(productId);
+    updateCartQuantity();
+
+    // Find the specific container for the product in this order
+    const container = button.closest(".product-details");
+
+    // Search only that container for the message
+    const messageElement = container.querySelector(
+      `.added-to-cart-${uniqueKey}`,
+    );
+    
+    if (messageElement) {
+      messageElement.classList.add("make-visible");
+
+      // Use a unique ID for the timeout so different buttons don't fight
+      if (buyAgainTimeouts[uniqueKey])
+        clearTimeout(buyAgainTimeouts[uniqueKey]);
+
+      buyAgainTimeouts[uniqueKey] = setTimeout(() => {
+        messageElement.classList.remove("make-visible");
+      }, 2000);
+    }
+  }
+});
+

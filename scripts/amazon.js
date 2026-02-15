@@ -55,8 +55,9 @@ loadPage();
 
 function renderProductsGrid(products) {
   const productsGrid = document.querySelector(".products-grid");
+  let productsHTML = "";
   products.forEach((product) => {
-    productsGrid.innerHTML += `
+    productsHTML += `
     <div class="product-container">
       <div class="product-image-container">
         <img class="product-image"
@@ -81,16 +82,12 @@ function renderProductsGrid(products) {
 
       <div class="product-quantity-container">
         <select name="quantity-selector-${product.id}" class="quantity-selector-${product.id}">
-          <option selected value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-          <option value="6">6</option>
-          <option value="7">7</option>
-          <option value="8">8</option>
-          <option value="9">9</option>
-          <option value="10">10</option>
+        ${[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+          .map(
+            (n) =>
+              `<option value="${n}" ${n === 1 ? "selected" : ""}>${n}</option>`,
+          )
+          .join("")}
         </select>
       </div>
       ${product.renderExtraInfo()}
@@ -110,33 +107,36 @@ function renderProductsGrid(products) {
       `;
   });
 
-  document.querySelectorAll(".add-to-cart-button").forEach((button) => {
-    button.addEventListener("click", () => {
-      const { productId } = button.dataset;
-      const selectedQuantity = +document.querySelector(
-        `.quantity-selector-${productId}`,
-      ).value;
-
-      // Add to cart object
-      addToCart(productId, selectedQuantity);
-
-      // Recalculate the cart total
-      updateCartQuantity();
-
-      const addedMessageTimeouts = {};
-
-      const messageElement = document.querySelector(
-        `.added-to-cart-${productId}`,
-      );
-
-      messageElement.classList.add("make-visible");
-
-      if (addedMessageTimeouts[productId])
-        clearTimeout(addedMessageTimeouts[productId]);
-
-      addedMessageTimeouts[productId] = setTimeout(() => {
-        messageElement.classList.remove("make-visible");
-      }, 2000);
-    });
-  });
+  productsGrid.innerHTML = productsHTML;
 }
+
+const addedMessageTimeouts = {};
+
+document.querySelector(".products-grid").addEventListener("click", (event) => {
+  const button = event.target.closest(".add-to-cart-button");
+  if (button) {
+    const { productId } = button.dataset;
+    const selectedQuantity = +document.querySelector(
+      `.quantity-selector-${productId}`,
+    ).value;
+
+    // Add to cart object
+    addToCart(productId, selectedQuantity);
+
+    // Recalculate the cart total
+    updateCartQuantity();
+
+    const messageElement = document.querySelector(
+      `.added-to-cart-${productId}`,
+    );
+
+    messageElement.classList.add("make-visible");
+
+    if (addedMessageTimeouts[productId])
+      clearTimeout(addedMessageTimeouts[productId]);
+
+    addedMessageTimeouts[productId] = setTimeout(() => {
+      messageElement.classList.remove("make-visible");
+    }, 2000);
+  }
+});

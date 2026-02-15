@@ -16,44 +16,42 @@ import renderCheckoutHeader from "./checkoutHeader.js";
 function renderOrderSummary() {
   const orderSummary = document.querySelector(".order-summary");
 
-  //Refresh the orderSummary for re-renders
-  orderSummary.innerHTML = "";
+  let orderSummaryHTML = "";
 
   cart.items.forEach((item) => {
-    const cartItemContainer = document.createElement("div");
-    cartItemContainer.classList.add("cart-item-container");
-    cartItemContainer.classList.add(`cart-item-container-${item.productId}`);
-
     const cartItem = getProduct(item.productId);
 
     const deliveryDate = formatDeliveryDate(
       getDeliveryOption(item.deliveryOptionId).deliveryDays,
     );
 
-    cartItemContainer.innerHTML = `
+    orderSummaryHTML += `
+    <div class="cart-item-container cart-item-container-${item.productId}">
       <div class="delivery-date">
-          Delivery date: ${deliveryDate}
+        Delivery date: ${deliveryDate}
       </div>
 
       <div class="cart-item-details-grid">
-          <img
-          class="product-image"
-          src="${cartItem.image}"
-          />
+        <img
+        class="product-image"
+        src="${cartItem.image}"
+        />
 
-          <div class="cart-item-details">
+        <div class="cart-item-details">
           <div class="product-name product-name-${item.productId}">
               ${cartItem.name}
           </div>
           <div class="product-price product-price-${item.productId}">
-           ${cartItem.getPrice()}
+          ${cartItem.getPrice()}
           </div>
           <div class="product-quantity product-quantity-${item.productId}">
               <span> Quantity: <span class="quantity-label">${item.quantity}</span> </span>
               <span class="update-quantity-link link-primary" data-product-id="${item.productId}">
               Update
               </span>
-              <input type="number" min="1" class="quantity-input quantity-input-${item.productId}">
+              <input name="quantity-input-${item.productId}" 
+              type="number" min="1" class="quantity-input quantity-input-${item.productId}"
+              data-product-id="${item.productId}"/>
               <span class="save-quantity-link link-primary" data-product-id="${item.productId}">
               Save
               </span>
@@ -62,19 +60,19 @@ function renderOrderSummary() {
               Delete
               </span>
           </div>
-          </div>
+        </div>
 
-          <div class="delivery-options">
-            <div class="delivery-options-title">
-                Choose a delivery option:
-            </div>
-            ${generateDeliveryOptions(item)}     
+        <div class="delivery-options">
+          <div class="delivery-options-title">
+              Choose a delivery option:
           </div>
+          ${generateDeliveryOptions(item)}     
+        </div>
       </div>  
     </div>     
     `;
-    orderSummary.appendChild(cartItemContainer);
   });
+  orderSummary.innerHTML = orderSummaryHTML;
 
   function generateDeliveryOptions(item) {
     let deliveryOptionsHTML = "";
@@ -100,71 +98,82 @@ function renderOrderSummary() {
 
     return deliveryOptionsHTML;
   }
-
-  document.querySelectorAll(".delete-quantity-link").forEach((link) =>
-    link.addEventListener("click", () => {
-      const { productId } = link.dataset;
-
-      // Filter the cart object
-      removeFromCart(productId);
-
-      // Repaint the Chekout header
-      renderCheckoutHeader();
-
-      // Re-render the order summary instead of .delete()
-      renderOrderSummary();
-
-      // Re-render Payment summary
-      renderPaymentSummary();
-    }),
-  );
-
-  document.querySelectorAll(".update-quantity-link").forEach((link) =>
-    link.addEventListener("click", () => {
-      const { productId } = link.dataset;
-
-      // Put the cart item in editing mode
-      document
-        .querySelector(`.cart-item-container-${productId}`)
-        .classList.add("is-editing-quantity");
-
-      // Set the value of the quantity input
-      document.querySelector(`.quantity-input-${productId}`).value =
-        cart.items.find((i) => i.productId === productId).quantity;
-    }),
-  );
-
-  document.querySelectorAll(".save-quantity-link").forEach((link) =>
-    link.addEventListener("click", () => {
-      const { productId } = link.dataset;
-
-      // Update the quantity of the focused item
-      const newQuantity = +document.querySelector(
-        `.quantity-input-${productId}`,
-      ).value;
-
-      updateQuantity(productId, newQuantity);
-
-      // Update the cartQuantity.
-      renderCheckoutHeader();
-
-      // Reset the UI as it was and update the quantity label.
-      renderOrderSummary();
-
-      // Re-render Payment summary
-      renderPaymentSummary();
-    }),
-  );
-
-  document.querySelectorAll(".delivery-option").forEach((option) => {
-    const { productId, deliveryOptionId } = option.dataset;
-
-    option.addEventListener("click", () => {
-      updateDeliveryOption(productId, deliveryOptionId);
-      renderOrderSummary();
-      renderPaymentSummary();
-    });
-  });
 }
+
+function refreshAllSummaries() {
+  // Re-render the list
+  renderOrderSummary();
+
+  // Sync the payment box
+  renderPaymentSummary();
+
+  // Sync the header count
+  renderCheckoutHeader();
+}
+
+document.querySelector(".order-summary")?.addEventListener("click", (event) => {
+  const { target } = event;
+  // Handle Delete
+  if (target.classList.contains("delete-quantity-link")) {
+    const { productId } = target.dataset;
+
+    // Filter the cart object
+    removeFromCart(productId);
+    refreshAllSummaries();
+  }
+
+  // Handle Update
+  if (target.classList.contains("update-quantity-link")) {
+    const { productId } = target.dataset;
+
+    // Put the cart item in editing mode
+    const container = document.querySelector(
+      `.cart-item-container-${productId}`,
+    );
+    container.classList.add("is-editing-quantity");
+
+    // Focus the input automatically
+    const input = document.querySelector(`.quantity-input-${productId}`);
+    input.value = cart.items.find((i) => i.productId === productId).quantity;
+    input.focus();
+  }
+
+  // Handle Save
+  if (target.classList.contains("save-quantity-link")) {
+    const { productId } = target.dataset;
+    const input = document.querySelector(`.quantity-input-${productId}`);
+    const newQuantity = +input.value;
+
+    if (newQuantity > 0 && newQuantity < 1000) {
+      updateQuantity(productId, newQuantity);
+      refreshAllSummaries();
+    } else {
+      alert("Quantity must be at least 1 and less than 1000");
+    }
+  }
+
+  // Delivery Option
+  const deliveryOption = target.closest(".delivery-option");
+  if (deliveryOption) {
+    const { productId, deliveryOptionId } = deliveryOption.dataset;
+    updateDeliveryOption(productId, deliveryOptionId);
+    refreshAllSummaries();
+  }
+});
+
+document
+  .querySelector(".order-summary")
+  ?.addEventListener("keydown", (event) => {
+    const { target, key } = event;
+    if (key === "Enter" && target.classList.contains("quantity-input")) {
+      const { productId } = target.dataset;
+      const newQuantity = +target.value;
+
+      if (newQuantity > 0 && newQuantity < 1000) {
+        updateQuantity(productId, newQuantity);
+        refreshAllSummaries();
+      }
+    }
+  });
 
 export default renderOrderSummary;

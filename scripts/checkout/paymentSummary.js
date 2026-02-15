@@ -7,6 +7,18 @@ import {
 import { addOrder, placeOrder } from "../../data/orders.js";
 import formatCurrency, { formatTaxCent } from "../utils/money.js";
 
+document
+  .querySelector(".payment-summary")
+  ?.addEventListener("click", async (event) => {
+    if (event.target.classList.contains("place-order-button")) {
+      const order = await placeOrder({ cart: cart.items });
+      addOrder(order);
+      // Empty the cart after placing order
+      clearCart();
+      window.location.href = "orders.html";
+    }
+  });
+
 function renderPaymentSummary() {
   const totalBeforeTaxCents = calculateTotalPrice() + calculateTotalShipping();
   const taxCents = formatTaxCent(totalBeforeTaxCents);
@@ -45,15 +57,6 @@ function renderPaymentSummary() {
             Place your order
           </button>
   `;
-  document
-    .querySelector(".place-order-button")
-    .addEventListener("click", async () => {
-      const order = await placeOrder({ cart: cart.items });
-      addOrder(order);
-      // Empty the cart after placing order
-      clearCart();
-      window.location.href = "orders.html";
-    });
 }
 
 export default renderPaymentSummary;
