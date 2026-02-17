@@ -124,3 +124,39 @@ input:focus {
   height: 20px;
   margin-right: 5px;
 }
+
+.error-container {
+  grid-column: 1 / -1; /* Spans across all grid columns */
+  display: flex;
+  gap: 13px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100px 20px;
+  text-align: center;
+}
+
+.error-icon-svg {
+  width: 50px;
+  height: 50px;
+}
+
+.error-message {
+  font-size: 18px;
+  font-weight: 700;
+  color: #c45500; /* Amazon-style orange/red error color */
+}
+
+.error-retry-button {
+  background-color: #ffd814;
+  border: 1px solid #fcd200;
+  border-radius: 8px;
+  padding: 8px 20px;
+  cursor: pointer;
+  box-shadow: 0 2px 5px 0 rgba(213, 217, 217, 0.5);
+  font-size: 13px;
+}
+
+.error-retry-button:hover {
+  background-color: #f7ca00;
+}
