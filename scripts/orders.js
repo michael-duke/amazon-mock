@@ -3,12 +3,14 @@ import { orders } from "../data/orders.js";
 import { getProduct, loadProductsFetch } from "../data/products.js";
 import { updateCartQuantity } from "./utils/cart.js";
 import { formatOrderDate } from "./utils/date.js";
+import { handleError } from "./utils/errors.js";
 import formatCurrency from "./utils/money.js";
 import { setupSearch } from "./utils/search.js";
 
 async function loadPage() {
   try {
     await loadProductsFetch();
+
     renderOrdersGrid();
     updateCartQuantity();
     setupSearch((query) => {
@@ -16,7 +18,9 @@ async function loadPage() {
       window.location.href = `amazon.html?search=${encodeURIComponent(query)}`;
     });
   } catch (error) {
-    console.log(error);
+    console.error("Critical Load Error:", error);
+    handleError(".orders-grid");
+    updateCartQuantity("!");
   }
 }
 
@@ -114,7 +118,7 @@ document.querySelector(".orders-grid")?.addEventListener("click", (event) => {
     const messageElement = container.querySelector(
       `.added-to-cart-${uniqueKey}`,
     );
-    
+
     if (messageElement) {
       messageElement.classList.add("make-visible");
 
@@ -128,4 +132,3 @@ document.querySelector(".orders-grid")?.addEventListener("click", (event) => {
     }
   }
 });
-

@@ -6,6 +6,8 @@ import {
   processSearch,
   toggleClearButton,
 } from "./utils/search.js";
+import { renderCartLoader, renderSkeletonGrid } from "./utils/loader.js";
+import { handleError } from "./utils/errors.js";
 
 /*
 loadProducts(() => {
@@ -17,7 +19,14 @@ loadProducts(() => {
 */
 
 async function loadPage() {
+  renderSkeletonGrid();
+  renderCartLoader();
   try {
+    // Create a 3-second delay
+    await new Promise((resolve) => {
+      setTimeout(resolve, 3000);
+    });
+
     await loadProductsFetch();
 
     // Setup Search
@@ -47,7 +56,9 @@ async function loadPage() {
       renderProductsGrid(products);
     }
   } catch (error) {
-    console.log("Unexpected error. Please try again later.", error);
+    console.error("Critical Load Error:", error);
+    handleError(".products-grid");
+    updateCartQuantity("!");
   }
 }
 
@@ -112,7 +123,7 @@ function renderProductsGrid(products) {
 
 const addedMessageTimeouts = {};
 
-document.querySelector(".products-grid").addEventListener("click", (event) => {
+document.querySelector(".products-grid")?.addEventListener("click", (event) => {
   const button = event.target.closest(".add-to-cart-button");
   if (button) {
     const { productId } = button.dataset;

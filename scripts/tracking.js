@@ -2,6 +2,7 @@ import { getOrder } from "../data/orders.js";
 import { getProduct, loadProductsFetch } from "../data/products.js";
 import { updateCartQuantity } from "./utils/cart.js";
 import { formatDeliveryDate } from "./utils/date.js";
+import { handleError } from "./utils/errors.js";
 import { calculateDeliveryProgress } from "./utils/progress.js";
 import { setupSearch } from "./utils/search.js";
 
@@ -16,6 +17,8 @@ async function loadPage() {
     });
   } catch (error) {
     console.log("Unexpected error. Please try again later.", error);
+    handleError(".order-tracking");
+    updateCartQuantity("!");
   }
 }
 
