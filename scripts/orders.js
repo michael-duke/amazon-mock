@@ -6,9 +6,18 @@ import { formatOrderDate } from "./utils/date.js";
 import { handleError } from "./utils/errors.js";
 import formatCurrency from "./utils/money.js";
 import { setupSearch } from "./utils/search.js";
+import { renderOrdersSkeleton, renderCartLoader } from "./utils/loader.js";
 
 async function loadPage() {
+  renderOrdersSkeleton();
+  renderCartLoader();
+
   try {
+    // Create a 3-second delay
+    await new Promise((resolve) => {
+      setTimeout(resolve, 2300);
+    });
+
     await loadProductsFetch();
 
     renderOrdersGrid();

@@ -3,12 +3,21 @@ import { getProduct, loadProductsFetch } from "../data/products.js";
 import { updateCartQuantity } from "./utils/cart.js";
 import { formatDeliveryDate } from "./utils/date.js";
 import { handleError } from "./utils/errors.js";
+import { renderCartLoader, renderTrackingSkeleton } from "./utils/loader.js";
 import { calculateDeliveryProgress } from "./utils/progress.js";
 import { setupSearch } from "./utils/search.js";
 
 async function loadPage() {
+  renderTrackingSkeleton();
+  renderCartLoader();
   try {
+    // Create a 3-second delay
+    await new Promise((resolve) => {
+      setTimeout(resolve, 2300);
+    });
+
     await loadProductsFetch();
+
     renderOrderTracking();
     updateCartQuantity();
     setupSearch((query) => {

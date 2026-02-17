@@ -6,7 +6,7 @@ import {
   processSearch,
   toggleClearButton,
 } from "./utils/search.js";
-import { renderCartLoader, renderSkeletonGrid } from "./utils/loader.js";
+import { renderCartLoader, renderProductsSkeleton } from "./utils/loader.js";
 import { handleError } from "./utils/errors.js";
 
 /*
@@ -19,12 +19,12 @@ loadProducts(() => {
 */
 
 async function loadPage() {
-  renderSkeletonGrid();
+  renderProductsSkeleton();
   renderCartLoader();
   try {
     // Create a 3-second delay
     await new Promise((resolve) => {
-      setTimeout(resolve, 3000);
+      setTimeout(resolve, 2300);
     });
 
     await loadProductsFetch();

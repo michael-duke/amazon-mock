@@ -565,7 +565,7 @@ const products = [
 */
 
 export function loadProductsFetch() {
-  return fetch("https://supersimplebackend.dev/prodcts")
+  return fetch("https://supersimplebackend.dev/products")
     .then((response) => {
       if (!response.ok) throw new Error("Network response was not ok.");
       return response.json();
