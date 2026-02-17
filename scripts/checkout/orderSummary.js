@@ -100,7 +100,7 @@ function renderOrderSummary() {
   }
 }
 
-function refreshAllSummaries() {
+export function refreshAllSummaries() {
   // Re-render the list
   renderOrderSummary();
 

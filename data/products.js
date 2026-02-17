@@ -565,8 +565,9 @@ const products = [
 */
 
 export function loadProductsFetch() {
-  return fetch("https://supersimplebackend.dev/products")
+  return fetch("https://supersimplebackend.dev/prodcts")
     .then((response) => {
+      if (!response.ok) throw new Error("Network response was not ok.");
       return response.json();
     })
     .then((productsData) => {
@@ -578,9 +579,6 @@ export function loadProductsFetch() {
         return new Product(productDetails);
       });
       console.log("load products");
-    })
-    .catch((error) => {
-      console.log("Unexpected error. Please try again later.");
     });
 }
 
