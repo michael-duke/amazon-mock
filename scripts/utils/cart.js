@@ -1,9 +1,11 @@
 import { calculateTotalQuantity } from "../../data/cart.js";
 
-export function updateCartQuantity() {
-  // Calculate the Cart quantity
-  const total = calculateTotalQuantity();
+export function updateCartQuantity(overrideValue) {
+  const cartQty = document.querySelector(".cart-quantity");
+  if (!cartQty) return;
+  cartQty.classList.remove("cart-quantity-loading");
 
-  // Update cart quantiy notification
-  document.querySelector(".cart-quantity").innerHTML = total || "";
+  const total = overrideValue ?? calculateTotalQuantity();
+  // Update cart quantiy notification based on overrideValue
+  cartQty.innerHTML = total || "";
 }
