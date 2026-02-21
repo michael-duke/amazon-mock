@@ -28,6 +28,10 @@ export class Product {
   }
 }
 
+export function setProducts(newProducts) {
+  products = newProducts;
+}
+
 export function getProduct(productId) {
   return products.find((product) => product.id === productId);
 }
@@ -571,15 +575,21 @@ export function loadProductsFetch() {
       return response.json();
     })
     .then((productsData) => {
-      products = productsData.map((productDetails) => {
-        if (productDetails.keywords.includes("appliances"))
-          return new Appliance(productDetails);
-        if (productDetails.type === "clothing")
-          return new Clothing(productDetails);
-        return new Product(productDetails);
-      });
+      products = rehydrateProducts(productsData);
       console.log("load products");
     });
+}
+
+export function rehydrateProducts(data) {
+  return data.map((productDetails) => {
+    if (productDetails.type === "clothing") {
+      return new Clothing(productDetails);
+    }
+    if (productDetails.keywords.includes("appliances")) {
+      return new Appliance(productDetails);
+    }
+    return new Product(productDetails);
+  });
 }
 
 // loadProductsFetch().then(() => console.log("next step"));

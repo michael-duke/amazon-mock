@@ -2,6 +2,7 @@ export function renderProductsSkeleton() {
   const productsGrid = document.querySelector(".products-grid");
   if (!productsGrid) return;
 
+  productsGrid.classList.add("is-visible");
   let skeletonHTML = "";
 
   for (let i = 0; i < 12; i++) {
@@ -28,7 +29,7 @@ export function renderProductsSkeleton() {
     `;
   }
 
-  productsGrid.innerHTML = skeletonHTML;
+  requestAnimationFrame(() => (productsGrid.innerHTML = skeletonHTML));
 }
 
 export function renderOrdersSkeleton() {
