@@ -1,12 +1,30 @@
 import { addToCart } from "../data/cart.js";
 import { orders } from "../data/orders.js";
-import { getProduct, loadProductsFetch } from "../data/products.js";
+import {
+  products,
+  getProduct,
+  setProducts,
+  loadProductsFetch,
+  rehydrateProducts,
+} from "../data/products.js";
 import { updateCartQuantity } from "./utils/cart.js";
 import { formatOrderDate } from "./utils/date.js";
 import { handleError } from "./utils/errors.js";
 import formatCurrency from "./utils/money.js";
 import { setupSearch } from "./utils/search.js";
 import { renderOrdersSkeleton, renderCartLoader } from "./utils/loader.js";
+import { intializeApp } from "./utils/init.js";
+
+// Check if we have data in the cache
+const cachedProducts = JSON.parse(sessionStorage.getItem("products-cache"));
+if (cachedProducts) {
+  const rehydrated = rehydrateProducts(cachedProducts);
+  setProducts(rehydrated);
+  renderOrdersGrid();
+  updateCartQuantity();
+  // Since it's rehydrated we can use products
+  setupSearchRedirect();
+} else loadPage();
 
 async function loadPage() {
   renderOrdersSkeleton();
@@ -20,12 +38,11 @@ async function loadPage() {
 
     await loadProductsFetch();
 
+    sessionStorage.setItem("products-cache", JSON.stringify(products));
+
     renderOrdersGrid();
     updateCartQuantity();
-    setupSearch((query) => {
-      // On the orders page, we always want to redirect to home
-      window.location.href = `amazon.html?search=${encodeURIComponent(query)}`;
-    });
+    setupSearchRedirect();
   } catch (error) {
     console.error("Critical Load Error:", error);
     handleError(".orders-grid");
@@ -33,10 +50,11 @@ async function loadPage() {
   }
 }
 
-loadPage();
+//loadPage();
 
 function renderOrdersGrid() {
   const ordersGrid = document.querySelector(".orders-grid");
+  ordersGrid.classList.remove("is-visible");
   let ordersHTML = "";
   orders.forEach((order) => {
     ordersHTML += `
@@ -60,9 +78,13 @@ function renderOrdersGrid() {
       </div>
   
       ${renderOrderDetailsGrid(order)}
+    </div>
       `;
   });
-  ordersGrid.innerHTML = ordersHTML;
+  requestAnimationFrame(() => {
+    ordersGrid.innerHTML = ordersHTML;
+    ordersGrid.classList.add("is-visible");
+  });
 
   function renderOrderDetailsGrid(order) {
     let orderDetailsGrid = "";
@@ -70,9 +92,11 @@ function renderOrdersGrid() {
     order.products.forEach((detail) => {
       const product = getProduct(detail.productId);
       orderDetailsGrid += `
-      <div class="order-details-grid">
+      <div class="order-details-grid image-not-loaded">
         <div class="product-image-container">
-          <img src="${product.image}">
+          <img src="${product.image}"
+          loading="eager"
+          onLoad="this.closest('.order-details-grid').classList.remove('image-not-loaded')">
         </div>
   
         <div class="product-details">
@@ -108,6 +132,13 @@ function renderOrdersGrid() {
     });
     return orderDetailsGrid;
   }
+}
+
+function setupSearchRedirect() {
+  // On the orders page, we always want to redirect to home
+  setupSearch((query) => {
+    window.location.href = `amazon.html?search=${encodeURIComponent(query)}`;
+  });
 }
 
 const buyAgainTimeouts = {};

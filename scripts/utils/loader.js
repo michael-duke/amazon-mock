@@ -32,6 +32,86 @@ export function renderProductsSkeleton() {
   requestAnimationFrame(() => (productsGrid.innerHTML = skeletonHTML));
 }
 
+export function refreshAllSummariesSkeleton() {
+  renderCheckoutHeaderSkeleton();
+  renderOrderSummarySkeleton();
+  renderPaymentSummarySkeleton();
+}
+
+function renderCheckoutHeaderSkeleton() {
+  const middleSection = document.querySelector(
+    ".checkout-header-middle-section",
+  );
+  if (middleSection) {
+    middleSection.innerHTML = `
+      Checkout( <div class="skeleton-box skeleton-header-quantity"></div> )
+    `;
+  }
+}
+
+function renderOrderSummarySkeleton() {
+  const orderSummary = document.querySelector(".order-summary");
+
+  let skeletonHTML = "";
+  for (let i = 0; i < 3; i++) {
+    skeletonHTML += `
+      <div class="cart-item-container">
+        <div class="skeleton-box skeleton-date"></div>
+
+        <div class="cart-item-details-grid">
+          <div class="skeleton-box skeleton-image-box"></div>
+
+          <div class="cart-item-details">
+            <div class="skeleton-box skeleton-name-line"></div>
+            <div class="skeleton-box skeleton-price-line"></div>
+          </div>
+
+          <div class="delivery-options">
+            <div class="skeleton-box skeleton-options-title"></div>
+            
+            ${Array(3)
+              .fill(
+                `
+              <div class="skeleton-option-row">
+                <div class="skeleton-box skeleton-radio"></div>
+                <div class="skeleton-box skeleton-option-text"></div>
+              </div>
+            `,
+              )
+              .join("")}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+  orderSummary.innerHTML = skeletonHTML;
+}
+
+export function renderPaymentSummarySkeleton() {
+  const paymentSummary = document.querySelector(".payment-summary");
+  if (!paymentSummary) return;
+
+  paymentSummary.innerHTML = `
+    <div class="payment-summary-title">Order Summary</div>
+    ${Array(4)
+      .fill(
+        `
+      <div class="payment-summary-row">
+        <div class="skeleton-box skeleton-payment-row-text"></div>
+        <div class="skeleton-box skeleton-payment-row-money"></div>
+      </div>
+    `,
+      )
+      .join("")}
+
+    <div class="payment-summary-row total-row">
+      <div class="skeleton-box skeleton-payment-row-text"></div>
+      <div class="skeleton-box skeleton-payment-row-money"></div>
+    </div>
+
+    <div class="skeleton-box skeleton-button"></div>
+  `;
+}
 export function renderOrdersSkeleton() {
   const ordersGrid = document.querySelector(".orders-grid");
   if (!ordersGrid) return;
