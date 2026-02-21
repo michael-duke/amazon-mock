@@ -161,6 +161,15 @@ input:focus {
   background-color: #f7ca00;
 }
 
+.fade-entrance {
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.fade-entrance.is-visible {
+  opacity: 1;
+}
+
 /* The Shimmer Engine */
 .skeleton-box {
   background-color: #eeeeee;

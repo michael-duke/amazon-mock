@@ -76,6 +76,18 @@
 
   display: flex;
   flex-direction: column;
+
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 0.5s ease-out,
+    transform 0.5s ease-out;
+}
+
+.product-container.image-not-loaded {
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
 }
 
 .product-image-container {
@@ -85,6 +97,7 @@
 
   height: 180px;
   margin-bottom: 20px;
+  aspect-ratio: 1 / 1;
 }
 
 .product-image {
@@ -137,7 +150,7 @@
 }
 
 .product-card-skeleton {
-  padding: 40px 25px 25px 25px; 
+  padding: 40px 25px 25px 25px;
   border-right: 1px solid rgb(231, 231, 231);
   border-bottom: 1px solid rgb(231, 231, 231);
   display: flex;
