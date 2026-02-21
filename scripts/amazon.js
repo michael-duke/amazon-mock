@@ -1,11 +1,12 @@
-import { products, loadProductsFetch } from "../data/products.js";
+import {
+  products,
+  loadProductsFetch,
+  rehydrateProducts,
+  setProducts,
+} from "../data/products.js";
 import { addToCart } from "../data/cart.js";
 import { updateCartQuantity } from "./utils/cart.js";
-import {
-  setupSearch,
-  processSearch,
-  toggleClearButton,
-} from "./utils/search.js";
+import { intializeApp } from "./utils/init.js";
 import { renderCartLoader, renderProductsSkeleton } from "./utils/loader.js";
 import { handleError } from "./utils/errors.js";
 
@@ -18,6 +19,16 @@ loadProducts(() => {
 });
 */
 
+// Check if we have data in the cache
+const cachedProducts = JSON.parse(sessionStorage.getItem("products-cache"));
+if (cachedProducts) {
+  const rehydrated = rehydrateProducts(cachedProducts);
+  setProducts(rehydrated);
+  updateCartQuantity();
+  // Since it's rehydrated we can use products
+  intializeApp(products, renderProductsGrid);
+} else loadPage();
+
 async function loadPage() {
   renderProductsSkeleton();
   renderCartLoader();
@@ -29,32 +40,11 @@ async function loadPage() {
 
     await loadProductsFetch();
 
-    // Setup Search
-    setupSearch((query) => {
-      processSearch(query, renderProductsGrid);
-    });
+    sessionStorage.setItem("products-cache", JSON.stringify(products));
 
     // Update the Cart notification on load
     updateCartQuantity();
-
-    // Check URL on load for initial search
-    const url = new URL(window.location.href);
-    const initialSearch = url.searchParams.get("search");
-    if (initialSearch) {
-      // Use the same processSearch logic for the initial load
-      processSearch(initialSearch, renderProductsGrid);
-      const searchBar = document.querySelector(".search-bar");
-      searchBar.value = initialSearch;
-      // Put the cursor at the end of the text automatically
-      toggleClearButton(initialSearch);
-      searchBar.focus();
-      searchBar.setSelectionRange(
-        searchBar.value.length,
-        searchBar.value.length,
-      );
-    } else {
-      renderProductsGrid(products);
-    }
+    intializeApp(products, renderProductsGrid);
   } catch (error) {
     console.error("Critical Load Error:", error);
     handleError(".products-grid");
@@ -62,17 +52,18 @@ async function loadPage() {
   }
 }
 
-loadPage();
-
 function renderProductsGrid(products) {
   const productsGrid = document.querySelector(".products-grid");
+  productsGrid.classList.remove("is-visible");
   let productsHTML = "";
   products.forEach((product) => {
     productsHTML += `
-    <div class="product-container">
+    <div class="product-container image-not-loaded">
       <div class="product-image-container">
         <img class="product-image"
-          src="${product.image}">
+          src="${product.image}"
+          loading="eager"
+          onLoad="this.closest('.product-container').classList.remove('image-not-loaded')">
       </div>
 
       <div class="product-name limit-text-to-2-lines">
@@ -118,7 +109,10 @@ function renderProductsGrid(products) {
       `;
   });
 
-  productsGrid.innerHTML = productsHTML;
+  requestAnimationFrame(() => {
+    productsGrid.innerHTML = productsHTML;
+    productsGrid.classList.add("is-visible");
+  });
 }
 
 const addedMessageTimeouts = {};
