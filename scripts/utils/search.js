@@ -172,3 +172,10 @@ export function processSearch(query, renderCallback) {
   productsGrid.innerHTML = "";
   renderCallback(filteredProducts);
 }
+
+export function setupSearchRedirect() {
+  // On the orders page, we always want to redirect to home
+  setupSearch((query) => {
+    window.location.href = `amazon.html?search=${encodeURIComponent(query)}`;
+  });
+}

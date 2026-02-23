@@ -11,18 +11,18 @@ import { updateCartQuantity } from "./utils/cart.js";
 import { formatOrderDate } from "./utils/date.js";
 import { handleError } from "./utils/errors.js";
 import formatCurrency from "./utils/money.js";
-import { setupSearch } from "./utils/search.js";
 import { renderOrdersSkeleton, renderCartLoader } from "./utils/loader.js";
-import { intializeApp } from "./utils/init.js";
+import { setupSearchRedirect } from "./utils/search.js";
 
 // Check if we have data in the cache
 const cachedProducts = JSON.parse(sessionStorage.getItem("products-cache"));
 if (cachedProducts) {
   const rehydrated = rehydrateProducts(cachedProducts);
+  // Now we can use getProduct in renderOrderDetails.
   setProducts(rehydrated);
+  
   renderOrdersGrid();
   updateCartQuantity();
-  // Since it's rehydrated we can use products
   setupSearchRedirect();
 } else loadPage();
 
@@ -132,13 +132,6 @@ function renderOrdersGrid() {
     });
     return orderDetailsGrid;
   }
-}
-
-function setupSearchRedirect() {
-  // On the orders page, we always want to redirect to home
-  setupSearch((query) => {
-    window.location.href = `amazon.html?search=${encodeURIComponent(query)}`;
-  });
 }
 
 const buyAgainTimeouts = {};

@@ -5,7 +5,7 @@ import { formatDeliveryDate } from "./utils/date.js";
 import { handleError } from "./utils/errors.js";
 import { renderCartLoader, renderTrackingSkeleton } from "./utils/loader.js";
 import { calculateDeliveryProgress } from "./utils/progress.js";
-import { setupSearch } from "./utils/search.js";
+import { setupSearchRedirect } from "./utils/search.js";
 
 async function loadPage() {
   renderTrackingSkeleton();
@@ -20,10 +20,7 @@ async function loadPage() {
 
     renderOrderTracking();
     updateCartQuantity();
-    setupSearch((query) => {
-      // On the orders page, we always want to redirect to home
-      window.location.href = `amazon.html?search=${encodeURIComponent(query)}`;
-    });
+    setupSearchRedirect();
   } catch (error) {
     console.log("Unexpected error. Please try again later.", error);
     handleError(".order-tracking");

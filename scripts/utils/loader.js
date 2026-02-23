@@ -112,10 +112,11 @@ export function renderPaymentSummarySkeleton() {
     <div class="skeleton-box skeleton-button"></div>
   `;
 }
+
 export function renderOrdersSkeleton() {
   const ordersGrid = document.querySelector(".orders-grid");
   if (!ordersGrid) return;
-
+  ordersGrid.classList.add("is-visible");
   let skeletonHTML = "";
 
   for (let i = 0; i < 3; i++) {
@@ -149,7 +150,7 @@ export function renderOrdersSkeleton() {
     `;
   }
 
-  ordersGrid.innerHTML = skeletonHTML;
+  requestAnimationFrame(() => (ordersGrid.innerHTML = skeletonHTML));
 }
 
 export function renderTrackingSkeleton() {
