@@ -156,7 +156,7 @@ export function renderOrdersSkeleton() {
 export function renderTrackingSkeleton() {
   const orderTracking = document.querySelector(".order-tracking");
   if (!orderTracking) return;
-
+  orderTracking.classList.add("is-visible");
   orderTracking.innerHTML = `
     <div class="tracking-skeleton-container">
       <div class="skel-back-link skeleton-box"></div>

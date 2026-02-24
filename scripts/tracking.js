@@ -1,11 +1,28 @@
 import { getOrder } from "../data/orders.js";
-import { getProduct, loadProductsFetch } from "../data/products.js";
+import {
+  getProduct,
+  setProducts,
+  loadProductsFetch,
+  rehydrateProducts,
+} from "../data/products.js";
 import { updateCartQuantity } from "./utils/cart.js";
 import { formatDeliveryDate } from "./utils/date.js";
 import { handleError } from "./utils/errors.js";
 import { renderCartLoader, renderTrackingSkeleton } from "./utils/loader.js";
 import { calculateDeliveryProgress } from "./utils/progress.js";
 import { setupSearchRedirect } from "./utils/search.js";
+
+// Check if we have data in the cache
+const cachedProducts = JSON.parse(sessionStorage.getItem("products-cache"));
+if (cachedProducts) {
+  const rehydrated = rehydrateProducts(cachedProducts);
+  // Now we can use getProduct in renderOrderDetails.
+  setProducts(rehydrated);
+
+  renderOrderTracking();
+  updateCartQuantity();
+  setupSearchRedirect();
+} else loadPage();
 
 async function loadPage() {
   renderTrackingSkeleton();
@@ -28,7 +45,7 @@ async function loadPage() {
   }
 }
 
-loadPage();
+// loadPage();
 
 function renderOrderTracking() {
   const url = new URL(window.location.href);
@@ -41,6 +58,7 @@ function renderOrderTracking() {
     order.orderTime,
     orderProduct.estimatedDeliveryTime,
   );
+
   const orderTracking = document.querySelector(".order-tracking");
   orderTracking.innerHTML = `
       <a class="back-to-orders-link link-primary" href="orders.html">
@@ -70,4 +88,5 @@ function renderOrderTracking() {
         <div style="width:${progress}%" class="progress-bar"></div>
       </div>
   `;
+  orderTracking.classList.add("is-visible");
 }
