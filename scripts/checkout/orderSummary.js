@@ -111,59 +111,63 @@ export function refreshAllSummaries() {
   renderCheckoutHeader();
 }
 
-document.querySelector(".order-summary")?.addEventListener("click", (event) => {
-  const { target } = event;
-  // Handle Delete
-  if (target.classList.contains("delete-quantity-link")) {
-    const { productId } = target.dataset;
+export function setupEventListeners() {
+  const orderSummary = document.querySelector(".order-summary");
 
-    // Filter the cart object
-    removeFromCart(productId);
-    refreshAllSummaries();
-  }
+  if (!orderSummary || orderSummary.dataset.listenersAttached) return;
 
-  // Handle Update
-  if (target.classList.contains("update-quantity-link")) {
-    const { productId } = target.dataset;
+  orderSummary?.addEventListener("click", (event) => {
+    const { target } = event;
+    // Handle Delete
+    if (target.classList.contains("delete-quantity-link")) {
+      console.log("delete");
+      const { productId } = target.dataset;
 
-    // Put the cart item in editing mode
-    const container = document.querySelector(
-      `.cart-item-container-${productId}`,
-    );
-    container.classList.add("is-editing-quantity");
-
-    // Focus the input automatically
-    const input = document.querySelector(`.quantity-input-${productId}`);
-    input.value = cart.items.find((i) => i.productId === productId).quantity;
-    input.focus();
-  }
-
-  // Handle Save
-  if (target.classList.contains("save-quantity-link")) {
-    const { productId } = target.dataset;
-    const input = document.querySelector(`.quantity-input-${productId}`);
-    const newQuantity = +input.value;
-
-    if (newQuantity > 0 && newQuantity < 1000) {
-      updateQuantity(productId, newQuantity);
+      // Filter the cart object
+      removeFromCart(productId);
       refreshAllSummaries();
-    } else {
-      alert("Quantity must be at least 1 and less than 1000");
     }
-  }
 
-  // Delivery Option
-  const deliveryOption = target.closest(".delivery-option");
-  if (deliveryOption) {
-    const { productId, deliveryOptionId } = deliveryOption.dataset;
-    updateDeliveryOption(productId, deliveryOptionId);
-    refreshAllSummaries();
-  }
-});
+    // Handle Update
+    if (target.classList.contains("update-quantity-link")) {
+      const { productId } = target.dataset;
 
-document
-  .querySelector(".order-summary")
-  ?.addEventListener("keydown", (event) => {
+      // Put the cart item in editing mode
+      const container = document.querySelector(
+        `.cart-item-container-${productId}`,
+      );
+      container.classList.add("is-editing-quantity");
+
+      // Focus the input automatically
+      const input = document.querySelector(`.quantity-input-${productId}`);
+      input.value = cart.items.find((i) => i.productId === productId).quantity;
+      input.focus();
+    }
+
+    // Handle Save
+    if (target.classList.contains("save-quantity-link")) {
+      const { productId } = target.dataset;
+      const input = document.querySelector(`.quantity-input-${productId}`);
+      const newQuantity = +input.value;
+
+      if (newQuantity > 0 && newQuantity < 1000) {
+        updateQuantity(productId, newQuantity);
+        refreshAllSummaries();
+      } else {
+        alert("Quantity must be at least 1 and less than 1000");
+      }
+    }
+
+    // Delivery Option
+    const deliveryOption = target.closest(".delivery-option");
+    if (deliveryOption) {
+      const { productId, deliveryOptionId } = deliveryOption.dataset;
+      updateDeliveryOption(productId, deliveryOptionId);
+      refreshAllSummaries();
+    }
+  });
+
+  orderSummary?.addEventListener("keydown", (event) => {
     const { target, key } = event;
     if (key === "Enter" && target.classList.contains("quantity-input")) {
       const { productId } = target.dataset;
@@ -176,4 +180,9 @@ document
     }
   });
 
+  orderSummary.dataset.listenersAttached = "true";
+}
+
 export default renderOrderSummary;
+
+setupEventListeners();

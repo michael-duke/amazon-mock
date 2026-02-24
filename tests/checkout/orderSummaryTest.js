@@ -1,4 +1,6 @@
-import renderOrderSummary from "../../scripts/checkout/orderSummary.js";
+import renderOrderSummary, {
+  setupEventListeners,
+} from "../../scripts/checkout/orderSummary.js";
 import {
   cart,
   loadFromStorage,
@@ -8,7 +10,7 @@ import {
 import { getProduct, loadProductsFetch } from "../../data/products.js";
 import formatCurrency from "../../scripts/utils/money.js";
 
-describe("Test Suite: Render order summaray", () => {
+describe("Test Suite: Render order summary", () => {
   const productId1 = "83d4ca15-0f35-48f5-b7a3-1ea210004f2e";
   const productId2 = "15b6fc6f-327a-4ec4-896f-486349e85a3d";
 
@@ -19,7 +21,9 @@ describe("Test Suite: Render order summaray", () => {
   beforeEach(() => {
     spyOn(localStorage, "setItem");
     document.querySelector(".test-container").innerHTML = `
-     <div class="checkout-header"></div>
+     <div class="checkout-header">
+     <div class="checkout-header-middle-section"></div>
+     </div>
      <div class="order-summary"></div>
      <div class="payment-summary"></div>
     `;
@@ -41,6 +45,7 @@ describe("Test Suite: Render order summaray", () => {
     );
     loadFromStorage();
     renderOrderSummary();
+    setupEventListeners();
   });
 
   afterEach(() => {
