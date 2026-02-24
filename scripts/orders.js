@@ -1,56 +1,49 @@
 import { addToCart } from "../data/cart.js";
 import { orders } from "../data/orders.js";
-import {
-  products,
-  getProduct,
-  setProducts,
-  loadProductsFetch,
-  rehydrateProducts,
-} from "../data/products.js";
+import { getProduct, loadProductsFetch } from "../data/products.js";
 import { updateCartQuantity } from "./utils/cart.js";
 import { formatOrderDate } from "./utils/date.js";
 import { handleError } from "./utils/errors.js";
 import formatCurrency from "./utils/money.js";
 import { renderOrdersSkeleton, renderCartLoader } from "./utils/loader.js";
 import { setupSearchRedirect } from "./utils/search.js";
+import { getCachedProducts } from "./utils/cache.js";
 
-// Check if we have data in the cache
-const cachedProducts = JSON.parse(sessionStorage.getItem("products-cache"));
-if (cachedProducts) {
-  const rehydrated = rehydrateProducts(cachedProducts);
-  // Now we can use getProduct in renderOrderDetails.
-  setProducts(rehydrated);
-  
-  renderOrdersGrid();
-  updateCartQuantity();
-  setupSearchRedirect();
-} else loadPage();
+loadPage();
 
 async function loadPage() {
-  renderOrdersSkeleton();
-  renderCartLoader();
+  const cachedData = getCachedProducts();
+  const controller = new AbortController();
+  const controllerTimeout = setTimeout(() => controller.abort(), 8000);
+  
+  // ONLY show the skeleton if we don't have cache
+  if (!cachedData) {
+    renderOrdersSkeleton();
+    renderCartLoader();
 
-  try {
-    // Create a 3-second delay
+    // Create a 2.3-second delay
     await new Promise((resolve) => {
       setTimeout(resolve, 2300);
     });
+  }
 
-    await loadProductsFetch();
 
-    sessionStorage.setItem("products-cache", JSON.stringify(products));
+  try {
+    await loadProductsFetch({ signal: controller.signal });
+    clearTimeout(controllerTimeout);
 
     renderOrdersGrid();
     updateCartQuantity();
     setupSearchRedirect();
   } catch (error) {
-    console.error("Critical Load Error:", error);
-    handleError(".orders-grid");
+    console.log("Critical Load Error: ", error);
+
+    if (error.name === "AbortError")
+      handleError(".orders-grid", "Connection timed out.");
+    else handleError(".orders-grid", "Failed to load orders info.");
     updateCartQuantity("!");
   }
 }
-
-//loadPage();
 
 function renderOrdersGrid() {
   const ordersGrid = document.querySelector(".orders-grid");

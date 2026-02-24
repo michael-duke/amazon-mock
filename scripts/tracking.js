@@ -1,51 +1,48 @@
 import { getOrder } from "../data/orders.js";
-import {
-  getProduct,
-  setProducts,
-  loadProductsFetch,
-  rehydrateProducts,
-} from "../data/products.js";
+import { getProduct, loadProductsFetch } from "../data/products.js";
 import { updateCartQuantity } from "./utils/cart.js";
 import { formatDeliveryDate } from "./utils/date.js";
 import { handleError } from "./utils/errors.js";
 import { renderCartLoader, renderTrackingSkeleton } from "./utils/loader.js";
 import { calculateDeliveryProgress } from "./utils/progress.js";
 import { setupSearchRedirect } from "./utils/search.js";
+import { getCachedProducts } from "./utils/cache.js";
 
-// Check if we have data in the cache
-const cachedProducts = JSON.parse(sessionStorage.getItem("products-cache"));
-if (cachedProducts) {
-  const rehydrated = rehydrateProducts(cachedProducts);
-  // Now we can use getProduct in renderOrderDetails.
-  setProducts(rehydrated);
-
-  renderOrderTracking();
-  updateCartQuantity();
-  setupSearchRedirect();
-} else loadPage();
+loadPage();
 
 async function loadPage() {
-  renderTrackingSkeleton();
-  renderCartLoader();
-  try {
-    // Create a 3-second delay
+  const cachedData = getCachedProducts();
+  const controller = new AbortController();
+  const controllerTimeout = setTimeout(() => controller.abort(), 8000);
+  
+  // ONLY show the skeleton if we don't have cache
+  if (!cachedData) {
+    renderTrackingSkeleton();
+    renderCartLoader();
+    
+    // Create a 2.3-second delay
     await new Promise((resolve) => {
       setTimeout(resolve, 2300);
     });
+  }
 
-    await loadProductsFetch();
+
+  try {
+    await loadProductsFetch({ signal: controller.signal });
+    clearTimeout(controllerTimeout);
 
     renderOrderTracking();
     updateCartQuantity();
     setupSearchRedirect();
   } catch (error) {
     console.log("Unexpected error. Please try again later.", error);
-    handleError(".order-tracking");
+
+    if (error.name === "AbortError")
+      handleError(".order-tracking", "Connection timed out.");
+    else handleError(".order-tracking", "Failed to load tracking info.");
     updateCartQuantity("!");
   }
 }
-
-// loadPage();
 
 function renderOrderTracking() {
   const url = new URL(window.location.href);

@@ -1,4 +1,4 @@
-export function handleError(containerSelector) {
+export function handleError(containerSelector, message) {
   const container = document.querySelector(containerSelector);
   if (container) {
     container.innerHTML = `
@@ -8,6 +8,7 @@ export function handleError(containerSelector) {
         </svg>
         <div class="error-message">
           We're sorry! We're having trouble loading this page right now.
+          <p>${message}</p>
         </div>
         <p>Please check your internet connection or try again.</p>
         <button class="error-retry-button">

@@ -1,3 +1,7 @@
+import {
+  getCachedProducts,
+  saveProductsToCache,
+} from "../scripts/utils/cache.js";
 import formatCurrency from "../scripts/utils/money.js";
 
 export let products = [];
@@ -568,16 +572,25 @@ const products = [
 
 */
 
-export function loadProductsFetch() {
-  return fetch("https://supersimplebackend.dev/products")
-    .then((response) => {
-      if (!response.ok) throw new Error("Network response was not ok.");
-      return response.json();
-    })
-    .then((productsData) => {
-      products = rehydrateProducts(productsData);
-      console.log("load products");
-    });
+export async function loadProductsFetch({ signal }) {
+  const cachedData = getCachedProducts();
+  // Check cache first
+  if (cachedData) {
+    console.log("Loading products from Cache");
+    setProducts(rehydrateProducts(cachedData));
+    return;
+  }
+
+  // If no cache, Fetch from Network
+  const response = await fetch("https://supersimplebackend.dev/products", {
+    signal,
+  });
+
+  const productsData = await response.json();
+  const rehydrated = rehydrateProducts(productsData);
+  setProducts(rehydrated);
+  saveProductsToCache(rehydrated);
+  console.log("load products");
 }
 
 export function rehydrateProducts(data) {

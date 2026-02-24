@@ -7,13 +7,21 @@ import { refreshAllSummariesSkeleton } from "./utils/loader.js";
 /*Async Await Version*/
 async function loadPage() {
   refreshAllSummariesSkeleton();
+
+  const controller = new AbortController();
+  const controllerTimeout = setTimeout(() => controller.abort(), 8000);
+
   try {
-    // Create a 3-second delay
+    // Create a 2.3-second delay
     await new Promise((resolve) => {
       setTimeout(resolve, 2300);
     });
 
-    await Promise.all([loadProductsFetch(), loadCartFetch()]);
+    await Promise.all([
+      loadProductsFetch({ signal: controller.signal }),
+      loadCartFetch({ signal: controller.signal }),
+    ]);
+    clearTimeout(controllerTimeout);
   } catch (error) {
     console.log("Unexpected error. Please try again later.", error);
     handleError(".checkout-grid");

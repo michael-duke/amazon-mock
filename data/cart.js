@@ -111,8 +111,8 @@ export function saveToStorage() {
   localStorage.setItem("cart", JSON.stringify(cart));
 }
 
-export function loadCartFetch() {
-  return fetch("https://supersimplebackend.dev/cart")
+export function loadCartFetch({ signal }) {
+  return fetch("https://supersimplebackend.dev/cart", { signal })
     .then((response) => response.text())
     .then((cartData) => console.log(cartData));
 }

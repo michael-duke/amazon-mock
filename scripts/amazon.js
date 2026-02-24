@@ -1,14 +1,10 @@
-import {
-  products,
-  loadProductsFetch,
-  rehydrateProducts,
-  setProducts,
-} from "../data/products.js";
+import { products, loadProductsFetch } from "../data/products.js";
 import { addToCart } from "../data/cart.js";
 import { updateCartQuantity } from "./utils/cart.js";
 import { intializeApp } from "./utils/init.js";
 import { renderCartLoader, renderProductsSkeleton } from "./utils/loader.js";
 import { handleError } from "./utils/errors.js";
+import { getCachedProducts } from "./utils/cache.js";
 
 /*
 loadProducts(() => {
@@ -20,34 +16,37 @@ loadProducts(() => {
 */
 
 // Check if we have data in the cache
-const cachedProducts = JSON.parse(sessionStorage.getItem("products-cache"));
-if (cachedProducts) {
-  const rehydrated = rehydrateProducts(cachedProducts);
-  setProducts(rehydrated);
-  updateCartQuantity();
-  // Since it's rehydrated we can use products
-  intializeApp(products, renderProductsGrid);
-} else loadPage();
+loadPage();
 
 async function loadPage() {
-  renderProductsSkeleton();
-  renderCartLoader();
-  try {
-    // Create a 3-second delay
+  const cachedData = getCachedProducts();
+  const controller = new AbortController();
+  const controllerTimeout = setTimeout(() => controller.abort(), 8000);
+  
+  // ONLY show the skeleton if we don't have cache
+  if (!cachedData) {
+    renderProductsSkeleton();
+    renderCartLoader();
+
+    // Create a 2.3-second delay
     await new Promise((resolve) => {
       setTimeout(resolve, 2300);
     });
+  }
 
-    await loadProductsFetch();
-
-    sessionStorage.setItem("products-cache", JSON.stringify(products));
+  try {
+    await loadProductsFetch({ signal: controller.signal });
+    clearTimeout(controllerTimeout);
 
     // Update the Cart notification on load
     updateCartQuantity();
     intializeApp(products, renderProductsGrid);
   } catch (error) {
     console.error("Critical Load Error:", error);
-    handleError(".products-grid");
+
+    if (error.name === "AbortError")
+      handleError(".products-grid", "Connection timed out.");
+    else handleError(".products-grid", "Failed to load product list.");
     updateCartQuantity("!");
   }
 }

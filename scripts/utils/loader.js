@@ -29,7 +29,7 @@ export function renderProductsSkeleton() {
     `;
   }
 
-  requestAnimationFrame(() => (productsGrid.innerHTML = skeletonHTML));
+  productsGrid.innerHTML = skeletonHTML;
 }
 
 export function refreshAllSummariesSkeleton() {
@@ -150,7 +150,7 @@ export function renderOrdersSkeleton() {
     `;
   }
 
-  requestAnimationFrame(() => (ordersGrid.innerHTML = skeletonHTML));
+  ordersGrid.innerHTML = skeletonHTML;
 }
 
 export function renderTrackingSkeleton() {
