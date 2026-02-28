@@ -6,7 +6,7 @@ function renderCheckoutHeader() {
     ".checkout-header-middle-section",
   );
   middleSection.innerHTML = `
-  Checkout (<a class="return-to-home-link" href="amazon.html">${total === 0 ? "" : total}</a>)    
+  Checkout (<a class="return-to-home-link" href="index.html">${total === 0 ? "" : total}</a>)    
  `;
 }
 

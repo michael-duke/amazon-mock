@@ -74,7 +74,7 @@ export function setupSearch(onSearch, products) {
     // Toggle Clear Button visibility
     toggleClearButton(normalizedQuery);
 
-    // Debounce if we are already on the amazon.html page
+    // Debounce if we are already on the index.html page
     if (productsGrid) {
       clearTimeout(searchTimeout);
       searchTimeout = setTimeout(() => {
@@ -154,7 +154,7 @@ export function processSearch(query, renderCallback) {
 
   if (!productsGrid) {
     // We are on Orders or Tracking -> Redirect
-    window.location.href = `amazon.html?search=${encodeURIComponent(query)}`;
+    window.location.href = `index.html?search=${encodeURIComponent(query)}`;
     return;
   }
 
@@ -176,6 +176,6 @@ export function processSearch(query, renderCallback) {
 export function setupSearchRedirect() {
   // On the orders page, we always want to redirect to home
   setupSearch((query) => {
-    window.location.href = `amazon.html?search=${encodeURIComponent(query)}`;
+    window.location.href = `index.html?search=${encodeURIComponent(query)}`;
   });
 }
