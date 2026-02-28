@@ -12,6 +12,7 @@ loadFromStorage();
 export function loadFromStorage() {
   const storedData = JSON.parse(localStorage.getItem("cart"));
   if (storedData) Object.assign(cart, storedData);
+  /* In development uncomment this
   else {
     cart.items = [
       {
@@ -28,6 +29,7 @@ export function loadFromStorage() {
     cart.totalQuantity = calculateTotalQuantity();
     cart.totalPriceCents = calculateTotalPrice();
   }
+    */
 }
 
 export function addToCart(productId, selectedQuantity = 1) {
