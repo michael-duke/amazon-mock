@@ -24,7 +24,10 @@ async function loadPage() {
     clearTimeout(controllerTimeout);
   } catch (error) {
     console.log("Unexpected error. Please try again later.", error);
-    handleError(".checkout-grid");
+    clearTimeout(controllerTimeout);
+    if (cart.length === 0) {
+      handleError(".checkout-grid", "Could not load checkout info.");
+    }
   }
   refreshAllSummaries();
 }

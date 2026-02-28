@@ -43,10 +43,13 @@ async function loadPage() {
     intializeApp(products, renderProductsGrid);
   } catch (error) {
     console.error("Critical Load Error:", error);
-
-    if (error.name === "AbortError")
-      handleError(".products-grid", "Connection timed out.");
-    else handleError(".products-grid", "Failed to load product list.");
+    clearTimeout(controllerTimeout);
+    
+   if (products.length === 0) {
+      handleError(".products-grid", error.name === "AbortError" 
+        ? "Connection timed out." 
+        : "Failed to load products list.");
+    }
     updateCartQuantity("!");
   }
 }

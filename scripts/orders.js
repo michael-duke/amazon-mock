@@ -5,30 +5,23 @@ import { updateCartQuantity } from "./utils/cart.js";
 import { formatOrderDate } from "./utils/date.js";
 import { handleError } from "./utils/errors.js";
 import formatCurrency from "./utils/money.js";
-import { renderOrdersSkeleton, renderCartLoader } from "./utils/loader.js";
+import { renderOrdersSkeleton } from "./utils/loader.js";
 import { setupSearchRedirect } from "./utils/search.js";
-import { getCachedProducts } from "./utils/cache.js";
 
 loadPage();
 
 async function loadPage() {
-  const cachedData = getCachedProducts();
   const controller = new AbortController();
   const controllerTimeout = setTimeout(() => controller.abort(), 8000);
-  
-  // ONLY show the skeleton if we don't have cache
-  if (!cachedData) {
-    renderOrdersSkeleton();
-    renderCartLoader();
 
+  renderOrdersSkeleton();
+
+  try {
     // Create a 2.3-second delay
     await new Promise((resolve) => {
       setTimeout(resolve, 2300);
     });
-  }
 
-
-  try {
     await loadProductsFetch({ signal: controller.signal });
     clearTimeout(controllerTimeout);
 
@@ -38,9 +31,14 @@ async function loadPage() {
   } catch (error) {
     console.log("Critical Load Error: ", error);
 
-    if (error.name === "AbortError")
-      handleError(".orders-grid", "Connection timed out.");
-    else handleError(".orders-grid", "Failed to load orders info.");
+    if (orders.length === 0) {
+      handleError(
+        ".orders-grid",
+        error.name === "AbortError"
+          ? "Connection timed out."
+          : "Failed to load orders.",
+      );
+    }
     updateCartQuantity("!");
   }
 }
@@ -49,6 +47,27 @@ function renderOrdersGrid() {
   const ordersGrid = document.querySelector(".orders-grid");
   ordersGrid.classList.remove("is-visible");
   let ordersHTML = "";
+
+  if (orders.length === 0) {
+    ordersGrid.innerHTML = `
+      <div class="empty-orders-message">
+        <svg class="empty-orders-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M21 8H3V20H21V8Z" stroke="#cccccc" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M1 3H23V8H1V3Z" stroke="#cccccc" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M10 12H14" stroke="#ff9900" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+
+        <h2>Your order history is empty</h2>
+        <p>Check out our latest deals and start shopping!</p>
+        
+        <a href="index.html">
+          <button class="button-primary">Continue Shopping</button>
+        </a>
+      </div>
+    `;
+    ordersGrid.classList.add("is-visible");
+    return;
+  }
   orders.forEach((order) => {
     ordersHTML += `
     <div class="order-container">

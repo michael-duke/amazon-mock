@@ -219,6 +219,30 @@
   }
 }
 
+.empty-orders-message {
+  text-align: center;
+  margin-top: 60px;
+  padding: 40px;
+}
+
+.empty-orders-svg {
+  width: 120px;
+  height: 120px;
+  margin-bottom: 20px;
+  opacity: 0.8;
+}
+
+.empty-orders-message h2 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.empty-orders-message p {
+  color: #565959;
+  margin-bottom: 25px;
+}
+
 .order-container-skeleton {
   border-radius: 8px;
 }
